@@ -225,5 +225,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 }
 
+// For iOS 4.2+ support
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+   	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+	
+    SXMStreamManager *facebookStreamManager = [multiStreamManager streamManagerforName:kFacebookStreamName];
+    return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
+
+}
 
 @end

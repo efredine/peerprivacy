@@ -38,12 +38,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(BOOL)connect
 {
-    
     DDLogVerbose(@"Facebook connect");
     facebook = [[Facebook alloc] initWithAppId:FACEBOOK_APP_ID andDelegate:self];
     
-    DDLogVerbose(@"Starting Facebook authentication.");
-    [facebook authorize:[NSArray arrayWithObject:@"xmpp_login"]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults objectForKey:@"FBAccessTokenKey"] 
+        && [defaults objectForKey:@"FBExpirationDateKey"]) {
+        facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
+        facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
+    }
+    
+    if (![facebook isSessionValid]) {
+        [facebook authorize:[NSArray arrayWithObject:@"xmpp_login"]];    
+    }    
     
     return YES;
     
@@ -87,10 +94,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)fbDidLogin
 {    
-	DDLogVerbose(@"%@: %@\nFacebook login successful!", THIS_FILE, THIS_METHOD);
-	
+	DDLogVerbose(@"%@: %@\nFacebook login successful!", THIS_FILE, THIS_METHOD);	
 	DDLogVerbose(@"%@: facebook.accessToken: %@", THIS_FILE, facebook.accessToken);
 	DDLogVerbose(@"%@: facebook.expirationDate: %@", THIS_FILE, facebook.expirationDate);
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:[facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[facebook expirationDate] forKey:@"FBExpirationDateKey"];
+    [defaults synchronize];
+
     
 	NSError *error = nil;
 	if (![self.xmppStream connect:&error])
