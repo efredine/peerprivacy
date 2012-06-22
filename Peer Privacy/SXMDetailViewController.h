@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SXMDetailViewController : UIViewController
+@interface SXMDetailViewController : UIViewController 
 
 @property (strong, nonatomic) id detailItem;
 

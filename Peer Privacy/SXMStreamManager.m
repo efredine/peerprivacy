@@ -322,6 +322,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    DDLogVerbose(@"Stream: %@", xmppStream);
+    DDLogVerbose(@"Message: %@", message);
     
 	// A simple example of inbound message handling.
     
@@ -357,7 +359,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence
 {
-	DDLogVerbose(@"%@: %@ - %@", THIS_FILE, THIS_METHOD, [presence fromStr]);
+//	DDLogVerbose(@"%@: %@ - %@", THIS_FILE, THIS_METHOD, [presence fromStr]);
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveError:(id)error

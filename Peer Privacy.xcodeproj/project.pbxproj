@@ -111,6 +111,7 @@
 		A1279494158D27620014DC8D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279493158D27620014DC8D /* SystemConfiguration.framework */; };
 		A1279496158D27870014DC8D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279495158D27870014DC8D /* libxml2.dylib */; };
 		A127949A158D28010014DC8D /* XMPPReconnect.m in Sources */ = {isa = PBXBuildFile; fileRef = A1279499158D28010014DC8D /* XMPPReconnect.m */; };
+		A188DDFF1593EC480066584B /* SXMSimpleConversationStarterController.m in Sources */ = {isa = PBXBuildFile; fileRef = A188DDFE1593EC480066584B /* SXMSimpleConversationStarterController.m */; };
 		A19AE627158E681400B8DF3C /* SXMStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE626158E681400B8DF3C /* SXMStreamManager.m */; };
 		A19AE62E158E6FE900B8DF3C /* SXMFacebookStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */; };
 		A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */; };
@@ -338,6 +339,8 @@
 		A1279495158D27870014DC8D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		A1279498158D28000014DC8D /* XMPPReconnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPReconnect.h; sourceTree = "<group>"; };
 		A1279499158D28010014DC8D /* XMPPReconnect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPReconnect.m; sourceTree = "<group>"; };
+		A188DDFD1593EC470066584B /* SXMSimpleConversationStarterController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMSimpleConversationStarterController.h; sourceTree = "<group>"; };
+		A188DDFE1593EC480066584B /* SXMSimpleConversationStarterController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMSimpleConversationStarterController.m; sourceTree = "<group>"; };
 		A19AE625158E681400B8DF3C /* SXMStreamManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMStreamManager.h; sourceTree = "<group>"; };
 		A19AE626158E681400B8DF3C /* SXMStreamManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMStreamManager.m; sourceTree = "<group>"; };
 		A19AE629158E6C4300B8DF3C /* SXMJabberStreamManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMJabberStreamManager.h; sourceTree = "<group>"; };
@@ -464,6 +467,8 @@
 				A19AE625158E681400B8DF3C /* SXMStreamManager.h */,
 				A19AE626158E681400B8DF3C /* SXMStreamManager.m */,
 				A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */,
+				A188DDFD1593EC470066584B /* SXMSimpleConversationStarterController.h */,
+				A188DDFE1593EC480066584B /* SXMSimpleConversationStarterController.m */,
 				A12792ED158D19F20014DC8D /* SXMMasterViewController.h */,
 				A12792EE158D19F20014DC8D /* SXMMasterViewController.m */,
 				A12792F0158D19F20014DC8D /* SXMDetailViewController.h */,
@@ -1231,6 +1236,7 @@
 				A19AE62E158E6FE900B8DF3C /* SXMFacebookStreamManager.m in Sources */,
 				A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */,
 				A19AE63B158EC71500B8DF3C /* SXMMultiStreamManager.m in Sources */,
+				A188DDFF1593EC480066584B /* SXMSimpleConversationStarterController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

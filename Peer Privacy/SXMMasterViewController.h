@@ -10,7 +10,9 @@
 
 #import <CoreData/CoreData.h>
 
-@interface SXMMasterViewController : UITableViewController <NSFetchedResultsControllerDelegate>
+#import "SXMSimpleConversationStarterController.h"
+
+@interface SXMMasterViewController : UITableViewController <NSFetchedResultsControllerDelegate,SXMConversationStarterDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
