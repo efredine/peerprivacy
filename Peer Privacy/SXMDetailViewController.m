@@ -34,7 +34,9 @@
     // Update the user interface for the detail item.
 
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [[self.detailItem valueForKey:@"timeStamp"] description];
+        NSString *fromJid = [self.detailItem valueForKey:@"streamBareJidStr"];
+        NSString *toJid = [self.detailItem valueForKey:@"jidStr"];
+        self.detailDescriptionLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", fromJid, toJid];
     }
 }
 

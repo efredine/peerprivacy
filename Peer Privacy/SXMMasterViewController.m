@@ -65,9 +65,6 @@
 //    }
     
     [self performSegueWithIdentifier:@"conversationStarterSegue" sender:self];
-//    SXMSimpleConversationStarterController *conversationStarter = [[SXMSimpleConversationStarterController alloc] init];
-//    [conversationStarter setDelegate:self];
-//    [self presentModalViewController:conversationStarter animated:YES];
 }
 
 #pragma mark - Table View
@@ -141,14 +138,14 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
     // Edit the sort key as appropriate.
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"timeStamp" ascending:NO];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastUpdatedTimestamp" ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortDescriptor, nil];
     
     [fetchRequest setSortDescriptors:sortDescriptors];
@@ -220,27 +217,42 @@
     [self.tableView endUpdates];
 }
 
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
-
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+    NSString *fromJid = [object valueForKey:@"streamBareJidStr"];
+    NSString *toJid = [object valueForKey:@"jidStr"];
+    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", fromJid, toJid];
 }
 
 #pragma mark Conversation Starter Protocol
 
-- (void) conversationStarterViewController: (SXMSimpleConversationStarterController*)sender: (BOOL) didChoose
+- (void) conversationStarterViewController: (SXMSimpleConversationStarterController*)sender didChoose:(BOOL) choice
 {
     NSLog(@"Dismissing the modal view controller");
+    
+    if (choice) {
+        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+        NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+        
+        // If appropriate, configure the new managed object.
+        // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+        NSDate *now = [NSDate date];
+        [newManagedObject setValue:now forKey:@"creationTimestamp"];
+        [newManagedObject setValue:now forKey:@"lastUpdatedTimestamp"];
+        [newManagedObject setValue:sender.yourJidTextField.text forKey:@"streamBareJidStr"];
+        [newManagedObject setValue:sender.otherJidTextField.text forKey:@"jidStr"];
+        
+        // Save the context.
+        NSError *error = nil;
+        if (![context save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        [self.tableView reloadData];
+    }
     [self dismissViewControllerAnimated:YES completion: nil];
 }
 

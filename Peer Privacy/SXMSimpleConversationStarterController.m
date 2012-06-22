@@ -48,14 +48,13 @@
 - (IBAction)okSelected:(id)sender
 {
     NSLog(@"OK pressed.");
-    
-    [self.delegate conversationStarterViewController:self :YES];
+    [self.delegate conversationStarterViewController:self didChoose:YES];
 }
 
 - (IBAction)cancelSelected:(id)sender
 {
     NSLog(@"Cancel pressed.");
-    [self.delegate conversationStarterViewController:self :NO];
+    [self.delegate conversationStarterViewController:self didChoose:NO];
 }
 
 

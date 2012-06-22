@@ -11,7 +11,7 @@
 @class SXMSimpleConversationStarterController;
 @protocol SXMConversationStarterDelegate <NSObject>
 
-- (void) conversationStarterViewController: (SXMSimpleConversationStarterController *)sender: (BOOL) didChoose;
+- (void) conversationStarterViewController: (SXMSimpleConversationStarterController *)sender didChoose :(BOOL)choice;
 
 @end
 
