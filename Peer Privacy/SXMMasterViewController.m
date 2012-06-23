@@ -30,8 +30,8 @@
 	// Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeNewMessage:)];
+    self.navigationItem.rightBarButtonItem = composeButton;
 }
 
 - (void)viewDidUnload
@@ -45,7 +45,7 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-- (void)insertNewObject:(id)sender
+- (void)composeNewMessage:(id)sender
 {
 //    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
 //    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
@@ -124,7 +124,7 @@
     }
     else if ([[segue identifier] isEqualToString:@"conversationStarterSegue"])
     {
-        [[segue destinationViewController] setDelegate:self];
+        [(SXMNewMessageController *)[[segue destinationViewController] topViewController] setDelegate:self];
     }
 }
 
@@ -225,9 +225,9 @@
     cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", fromJid, toJid];
 }
 
-#pragma mark Conversation Starter Protocol
+#pragma mark New Message Delegate Protocol
 
-- (void) conversationStarterViewController: (SXMSimpleConversationStarterController*)sender didChoose:(BOOL) choice
+- (void) SXMNewMessageController:(SXMNewMessageController *)sender didChoose:(BOOL)choice
 {
     NSLog(@"Dismissing the modal view controller");
     
@@ -241,9 +241,9 @@
         NSDate *now = [NSDate date];
         [newManagedObject setValue:now forKey:@"creationTimestamp"];
         [newManagedObject setValue:now forKey:@"lastUpdatedTimestamp"];
-        [newManagedObject setValue:sender.yourJidTextField.text forKey:@"streamBareJidStr"];
-        [newManagedObject setValue:sender.otherJidTextField.text forKey:@"jidStr"];
-        
+//        [newManagedObject setValue:sender.yourJidTextField.text forKey:@"streamBareJidStr"];
+//        [newManagedObject setValue:sender.otherJidTextField.text forKey:@"jidStr"];
+//        
         // Save the context.
         NSError *error = nil;
         if (![context save:&error]) {
