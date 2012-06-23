@@ -7,8 +7,9 @@
 //
 
 #import "SXMNewMessageController.h"
-#import "XMPPRosterCoreDataStorage.h"
-
+#import "SXMAppDelegate.h"
+#import "SXMMultiStreamManager.h"
+#import "SXMStreamManager.h"
 #import "XMPPFramework.h"
 #import "DDLog.h"
 
@@ -26,6 +27,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @implementation SXMNewMessageController
 
 @synthesize delegate;
+
+- (SXMAppDelegate *)appDelegate
+{
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -106,7 +112,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (IBAction)cancelSelected:(id)sender
 {
     NSLog(@"Cancel pressed.");
-    [self.delegate SXMNewMessageController:self didChoose:NO];
+    [self.delegate SXMNewMessageControllerCancelled:self];
 }
 
 
@@ -121,6 +127,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
      // Pass the selected object to the new view controller.
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
+    
+    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    
+    [self.delegate SXMNewMessageController:self withUser:user];
+
 }
 
 #pragma mark - core data access helper
@@ -185,19 +196,20 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	// Our xmppRosterStorage will cache photos as they arrive from the xmppvCardAvatarModule.
 	// We only need to ask the avatar module for a photo, if the roster doesn't have it.
 	
-//	if (user.photo != nil)
-//	{
-//		cell.imageView.image = user.photo;
-//	} 
-//	else
-//	{
-//		NSData *photoData = [[[self appDelegate] xmppvCardAvatarModule] photoDataForJID:user.jid];
-//        
-//		if (photoData != nil)
-//			cell.imageView.image = [UIImage imageWithData:photoData];
-//		else
-//			cell.imageView.image = [UIImage imageNamed:@"defaultPerson"];
-//	}
+	if (user.photo != nil)
+	{
+		cell.imageView.image = user.photo;
+	} 
+	else
+	{
+        SXMStreamManager *streamManager = [[[self appDelegate] multiStreamManager] streamManagerforStreamBareJidStr:user.streamBareJidStr];
+		NSData *photoData = [[streamManager xmppvCardAvatarModule] photoDataForJID:user.jid];
+        
+		if (photoData != nil)
+			cell.imageView.image = [UIImage imageWithData:photoData];
+		else
+			cell.imageView.image = [UIImage imageNamed:@"defaultPerson"];
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,7 +268,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
 	
 	cell.textLabel.text = user.displayName;
-//	[self configurePhotoForCell:cell user:user];
+	[self configurePhotoForCell:cell user:user];
 	
 	return cell;
 }

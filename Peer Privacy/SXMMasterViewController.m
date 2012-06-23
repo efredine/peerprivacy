@@ -6,9 +6,12 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import "XMPPRosterCoreDataStorage.h"
 #import "SXMMasterViewController.h"
-
 #import "SXMDetailViewController.h"
+#import "SXMMultiStreamManager.h"
+#import "SXMStreamManager.h"
+#import "SXMAppDelegate.h"
 
 @interface SXMMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -18,6 +21,11 @@
 
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
+
+- (SXMAppDelegate *)appDelegate
+{
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 - (void)awakeFromNib
 {
@@ -65,6 +73,13 @@
 //    }
     
     [self performSegueWithIdentifier:@"conversationStarterSegue" sender:self];
+}
+
+#pragma mark - core data access helper
+
+- (NSManagedObjectContext *)managedObjectContext_roster
+{
+	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
 }
 
 #pragma mark - Table View
@@ -127,6 +142,32 @@
         [(SXMNewMessageController *)[[segue destinationViewController] topViewController] setDelegate:self];
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark UITableViewCell helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)configurePhotoForCell:(UITableViewCell *)cell user:(XMPPUserCoreDataStorageObject *)user
+{
+	// Our xmppRosterStorage will cache photos as they arrive from the xmppvCardAvatarModule.
+	// We only need to ask the avatar module for a photo, if the roster doesn't have it.
+	
+	if (user.photo != nil)
+	{
+		cell.imageView.image = user.photo;
+	} 
+	else
+	{
+        SXMStreamManager *streamManager = [[[self appDelegate] multiStreamManager] streamManagerforStreamBareJidStr:user.streamBareJidStr];
+		NSData *photoData = [[streamManager xmppvCardAvatarModule] photoDataForJID:user.jid];
+        
+		if (photoData != nil)
+			cell.imageView.image = [UIImage imageWithData:photoData];
+		else
+			cell.imageView.image = [UIImage imageNamed:@"defaultPerson"];
+	}
+}
+
 
 #pragma mark - Fetched results controller
 
@@ -220,39 +261,67 @@
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString *fromJid = [object valueForKey:@"streamBareJidStr"];
-    NSString *toJid = [object valueForKey:@"jidStr"];
-    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", fromJid, toJid];
+    NSString *streamBareJidStr = [object valueForKey:@"streamBareJidStr"];
+    NSString *jidStr = [object valueForKey:@"jidStr"];
+    
+    NSManagedObjectContext *moc = [self managedObjectContext_roster];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
+                              jidStr, 
+                              streamBareJidStr];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    if (array == nil)
+    {
+        // didn't find it
+        cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", streamBareJidStr, jidStr];
+    }
+    else {
+        XMPPUserCoreDataStorageObject *user = [array objectAtIndex:0];
+        cell.textLabel.text = user.displayName;
+        [self configurePhotoForCell:cell user:user];
+    }
 }
 
 #pragma mark New Message Delegate Protocol
 
-- (void) SXMNewMessageController:(SXMNewMessageController *)sender didChoose:(BOOL)choice
-{
-    NSLog(@"Dismissing the modal view controller");
+- (void)SXMNewMessageController:(SXMNewMessageController *)sender withUser:(XMPPUserCoreDataStorageObject *)user {
     
-    if (choice) {
-        NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-        NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-        NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-        
-        // If appropriate, configure the new managed object.
-        // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-        NSDate *now = [NSDate date];
-        [newManagedObject setValue:now forKey:@"creationTimestamp"];
-        [newManagedObject setValue:now forKey:@"lastUpdatedTimestamp"];
-//        [newManagedObject setValue:sender.yourJidTextField.text forKey:@"streamBareJidStr"];
-//        [newManagedObject setValue:sender.otherJidTextField.text forKey:@"jidStr"];
-//        
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        [self.tableView reloadData];
+    NSLog(@"New Message Selected");
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    
+    NSDate *now = [NSDate date];
+    [newManagedObject setValue:now forKey:@"creationTimestamp"];
+    [newManagedObject setValue:now forKey:@"lastUpdatedTimestamp"];
+    [newManagedObject setValue:user.streamBareJidStr forKey:@"streamBareJidStr"];
+    [newManagedObject setValue:user.jid.full forKey:@"jidStr"];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
     }
+    
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion: nil];
+}
+
+- (void)SXMNewMessageControllerCancelled:(SXMNewMessageController *)sender
+{
+    NSLog(@"New Message cancelled");
     [self dismissViewControllerAnimated:YES completion: nil];
 }
 

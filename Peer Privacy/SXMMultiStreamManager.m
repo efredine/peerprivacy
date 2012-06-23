@@ -48,4 +48,14 @@
     return [configuredStreams objectForKey:streamName];
 }
 
+- (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr
+{
+    for (SXMStreamManager *aStreamManager in [self.configuredStreams allValues] ) {
+        if ([aStreamManager.xmppStream.myJID.bare isEqualToString:streamBareJidStr]) {
+            return aStreamManager;
+        }
+    }
+    return nil;
+}
+
 @end

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A113CADF159529C600807CF1 /* SXMNewMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = A113CADE159529C600807CF1 /* SXMNewMessageController.m */; };
+		A113CAE215967EB700807CF1 /* defaultPerson.png in Resources */ = {isa = PBXBuildFile; fileRef = A113CAE115967EB700807CF1 /* defaultPerson.png */; };
 		A12792D4158D19F20014DC8D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D3158D19F20014DC8D /* UIKit.framework */; };
 		A12792D6158D19F20014DC8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D5158D19F20014DC8D /* Foundation.framework */; };
 		A12792D8158D19F20014DC8D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D7158D19F20014DC8D /* CoreGraphics.framework */; };
@@ -145,6 +146,7 @@
 /* Begin PBXFileReference section */
 		A113CADD159529C500807CF1 /* SXMNewMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMNewMessageController.h; sourceTree = "<group>"; };
 		A113CADE159529C600807CF1 /* SXMNewMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMNewMessageController.m; sourceTree = "<group>"; };
+		A113CAE115967EB700807CF1 /* defaultPerson.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultPerson.png; sourceTree = "<group>"; };
 		A12792CF158D19F20014DC8D /* Peer Privacy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Peer Privacy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A12792D3158D19F20014DC8D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		A12792D5158D19F20014DC8D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -519,6 +521,7 @@
 		A1279315158D1CB80014DC8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A113CAE115967EB700807CF1 /* defaultPerson.png */,
 				A1279311158D1A6B0014DC8D /* icon.png */,
 				A1279312158D1A6B0014DC8D /* icon@2x.png */,
 			);
@@ -1112,6 +1115,7 @@
 				A1F78D75158D4A1C0059FF78 /* .gitignore in Resources */,
 				A1F78D8A158D4A1C0059FF78 /* FBDialog.bundle in Resources */,
 				A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */,
+				A113CAE215967EB700807CF1 /* defaultPerson.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,5 +21,6 @@
 @property (nonatomic, strong) NSMutableDictionary *configuredStreams;
 
 - (SXMStreamManager *) streamManagerforName: (NSString *)streamName;
+- (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
 
 @end

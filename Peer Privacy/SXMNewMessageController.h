@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "XMPP.h"
+#import "XMPPRosterCoreDataStorage.h"
 
 @class SXMNewMessageController;
 @protocol SXMNewMessageDelegate <NSObject>
 
-- (void) SXMNewMessageController: (SXMNewMessageController *)sender didChoose :(BOOL)choice;
+- (void) SXMNewMessageController:(SXMNewMessageController *)sender withUser: (XMPPUserCoreDataStorageObject *)user;
+
+- (void) SXMNewMessageControllerCancelled:(SXMNewMessageController *)sender;
 
 @end
 
