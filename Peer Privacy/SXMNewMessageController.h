@@ -20,9 +20,10 @@
 @end
 
 
-@interface SXMNewMessageController : UITableViewController <NSFetchedResultsControllerDelegate>
+@interface SXMNewMessageController : UITableViewController <NSFetchedResultsControllerDelegate, UISearchBarDelegate, UISearchDisplayDelegate>
 {
 	NSFetchedResultsController *fetchedResultsController;
+    NSFetchedResultsController *searchFetchedResultsController;
 }
 
 @property (strong, nonatomic) id<SXMNewMessageDelegate> delegate;
