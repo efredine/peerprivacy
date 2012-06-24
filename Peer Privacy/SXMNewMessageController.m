@@ -29,10 +29,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize delegate;
 @synthesize mySearchDisplayController;
 
-- (SXMAppDelegate *)appDelegate
-{
-	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
-}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -51,6 +47,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelected:)];
     self.navigationItem.leftBarButtonItem = cancelButton;
     
+    // Allocate and configure search display controller
     UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 44.0)];
     searchBar.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
     searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
@@ -77,89 +74,58 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - New message delegate
 
+// Let delegate know dialog has been cancelled - delegate will dismiss dialog.
 - (IBAction)cancelSelected:(id)sender
 {
-    NSLog(@"Cancel pressed.");
     [self.delegate SXMNewMessageControllerCancelled:self];
 }
 
 
-#pragma mark - Table view delegate
+#pragma mark - Helper Methods
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+- (SXMAppDelegate *)appDelegate
 {
-    NSFetchedResultsController * aFetchedResultsController = [self fetchedResultsControllerForTableView: tableView];
-
-    XMPPUserCoreDataStorageObject *user = [aFetchedResultsController objectAtIndexPath:indexPath];
-    
-    [self.delegate SXMNewMessageController:self withUser:user];
-
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
-
-#pragma mark - core data access helper
 
 - (NSManagedObjectContext *)managedObjectContext_roster
 {
 	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
 }
 
-#pragma mark Helper functions for getting the right table view and fetched results controller
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark NSFetchedResultsControllers
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+ *  When using a UISearchDisplayController there are two views with two corresponding fetched results
+ *  controllers.  The fetchedResultsController is for the underlying view that is displayed whenever
+ *  the search controller is not active.  This view is displayed when the view first becomes active.
+ *  
+ *  The search fetched results controller provides the results for an active search.  These results
+ *  are displayed in a view that overlays the original view.
+ *
+ *  The same table view delegate methods are called for both table views.  As such, the first thing
+ *  the delegate methods do is retrieve the correct corresponding fetched results controller using
+ *  fetchedResultsControllerForTableView.  The delegate methods for the fetched results controller
+ *  do the inverse operation to retrieve the table view to reload.
+ */
 
+// Called by TableView delegate to retrieve the appropriate fetched results controller.
 - (NSFetchedResultsController *)fetchedResultsControllerForTableView: (UITableView *) tableView
 {
     return tableView == self.tableView ? self.fetchedResultsController : self.searchFetchedResultsController;
 }
 
+// Called by FetchedResultsController to retrieve the appropriate table view.
 - (UITableView *)tableViewForFetchedResultsController: (NSFetchedResultsController *) aFetchedResultsController
 {
     return aFetchedResultsController == self.fetchedResultsController ? self.tableView : self.mySearchDisplayController.searchResultsTableView;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark NSFetchedResultsControllers
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+// Results for the underlying view.
 - (NSFetchedResultsController *)fetchedResultsController
 {
 	if (fetchedResultsController == nil)
@@ -197,6 +163,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	return fetchedResultsController;
 }
 
+// Search results.
 - (NSFetchedResultsController *)searchFetchedResultsController
 {
     NSManagedObjectContext *moc = [self managedObjectContext_roster];
@@ -215,7 +182,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
         NSString *searchString = self.searchDisplayController.searchBar.text;
         if ([searchString length] > 0) {
-            NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"displayName CONTAINS %@", searchString];
+            NSPredicate *searchPredicate = [NSPredicate predicateWithFormat:@"displayName CONTAINS [cd] %@", searchString];
             [fetchRequest setPredicate:searchPredicate];
         }
         
@@ -271,37 +238,47 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #pragma mark UITableView
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*
+ *  Currently, the underlying view is sorted by status with a section for each status.  The search
+ *  view is all one sections sorted by name.  The view delegate methods hanlde both - the 
+ *  configuration and presence of sections (or not) is determined by the corresponding fetched
+ *  results controller.
+ */
+
+// Tell the delegate the user has selected a user.
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSFetchedResultsController * aFetchedResultsController = [self fetchedResultsControllerForTableView: tableView];
+
+    XMPPUserCoreDataStorageObject *user = [aFetchedResultsController objectAtIndexPath:indexPath];
+    [self.delegate SXMNewMessageController:self withUser:user];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if (tableView != self.tableView) {
-        NSLog(@"Returning 1 section for table log view");
-        return 1;
-    }
     NSFetchedResultsController * aFetchedResultsController = [self fetchedResultsControllerForTableView: tableView];
 	return [[aFetchedResultsController sections] count];
 }
 
+// Only the underlying view has section titles.
 - (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
-{
-    if (self.tableView != sender) {
-        NSLog(@"Returning empty string for searchTableView section header");
-        return @"";
-    }
-    
-	NSArray *sections = [[self fetchedResultsController] sections];
-	
-	if (sectionIndex < [sections count])
-	{
-		id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
+{    
+    if (sender == self.tableView) {
+        NSArray *sections = [[self fetchedResultsController] sections];
         
-		int section = [sectionInfo.name intValue];
-		switch (section)
-		{
-			case 0  : return @"Available";
-			case 1  : return @"Away";
-			default : return @"Offline";
-		}
-	}
+        if (sectionIndex < [sections count])
+        {
+            id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:sectionIndex];
+            
+            int section = [sectionInfo.name intValue];
+            switch (section)
+            {
+                case 0  : return @"Available";
+                case 1  : return @"Away";
+                default : return @"Offline";
+            }
+        }
+    }
 	
 	return @"";
 }
@@ -319,16 +296,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 		numRows = sectionInfo.numberOfObjects;
 	}
 	
-    NSLog(@"Section: %d, Rows: %d", sectionIndex, numRows);
-	return numRows;
+ 	return numRows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	static NSString *CellIdentifier = @"NewMessageTableCell";
     
-    NSLog(@"Requesting section: %d, row: %d", [indexPath section], [indexPath row]);
-	
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil)
 	{
@@ -347,10 +321,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 #pragma mark -
-#pragma mark Content Filtering
+#pragma mark Search Bar
+/*
+ *  Search bar implementation proceeds by destroying and re-creating the fetched results controller
+ *  every time the search phrase changes.  This is done by setting the searched results controller
+ *  to nil which causes it to be re-initialized by the lazy initialization when called from the
+ *  table view delegate methods.
+ */
+
 - (void)filterContentForSearchText:(NSString*)searchText scope:(NSInteger)scope
 {
-    NSLog(@"Setting searchFetch to nil through filter content");
     // update the filter, in this case just blow away the FRC and let lazy evaluation create another with the relevant search info
     searchFetchedResultsController.delegate = nil;
     searchFetchedResultsController = nil;
@@ -358,20 +338,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     //self.savedScopeButtonIndex = scope;
 }
 
-
-#pragma mark -
-#pragma mark Search Bar 
 - (void)searchDisplayController:(UISearchDisplayController *)controller willUnloadSearchResultsTableView:(UITableView *)tableView;
 {
-    NSLog(@"Unloading search results");
-    // search is done so get rid of the search FRC and reclaim memory
+     // search is done so get rid of the search FRC and reclaim memory
     searchFetchedResultsController.delegate = nil;
     searchFetchedResultsController = nil;
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
 {
-    NSLog(@"shouldReloadTableForSearchString");
     [self filterContentForSearchText:searchString 
                                scope:[self.searchDisplayController.searchBar selectedScopeButtonIndex]];
     
@@ -382,7 +357,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
 {
-    NSLog(@"shouldReloadForSearchScope");
     [self filterContentForSearchText:[self.searchDisplayController.searchBar text] 
                                scope:[self.searchDisplayController.searchBar selectedScopeButtonIndex]];
    
