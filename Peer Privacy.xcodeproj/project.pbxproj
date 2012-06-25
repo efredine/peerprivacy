@@ -119,6 +119,12 @@
 		A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */; };
 		A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A19AE630158EBDB900B8DF3C /* Settings.bundle */; };
 		A19AE63B158EC71500B8DF3C /* SXMMultiStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE63A158EC71500B8DF3C /* SXMMultiStreamManager.m */; };
+		A1E47E5C1598E2B60013FE12 /* ChatBar.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E571598E2B60013FE12 /* ChatBar.png */; };
+		A1E47E5D1598E2B60013FE12 /* ChatBubbleGray.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E581598E2B60013FE12 /* ChatBubbleGray.png */; };
+		A1E47E5E1598E2B60013FE12 /* ChatBubbleGray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E591598E2B60013FE12 /* ChatBubbleGray@2x.png */; };
+		A1E47E5F1598E2B60013FE12 /* ChatBubbleGreen.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E5A1598E2B60013FE12 /* ChatBubbleGreen.png */; };
+		A1E47E601598E2B60013FE12 /* ChatBubbleGreen@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E5B1598E2B60013FE12 /* ChatBubbleGreen@2x.png */; };
+		A1E47E631598E2C20013FE12 /* SendButton.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E621598E2C20013FE12 /* SendButton.png */; };
 		A1F78D75158D4A1C0059FF78 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = A1F78D1A158D4A1C0059FF78 /* .gitignore */; };
 		A1F78D89158D4A1C0059FF78 /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = A1F78D43158D4A1C0059FF78 /* Facebook.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A1F78D8A158D4A1C0059FF78 /* FBDialog.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A1F78D46158D4A1C0059FF78 /* FBDialog.bundle */; };
@@ -355,6 +361,12 @@
 		A19AE630158EBDB900B8DF3C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A19AE639158EC71400B8DF3C /* SXMMultiStreamManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMMultiStreamManager.h; sourceTree = "<group>"; };
 		A19AE63A158EC71500B8DF3C /* SXMMultiStreamManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMMultiStreamManager.m; sourceTree = "<group>"; };
+		A1E47E571598E2B60013FE12 /* ChatBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ChatBar.png; sourceTree = "<group>"; };
+		A1E47E581598E2B60013FE12 /* ChatBubbleGray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ChatBubbleGray.png; sourceTree = "<group>"; };
+		A1E47E591598E2B60013FE12 /* ChatBubbleGray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ChatBubbleGray@2x.png"; sourceTree = "<group>"; };
+		A1E47E5A1598E2B60013FE12 /* ChatBubbleGreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ChatBubbleGreen.png; sourceTree = "<group>"; };
+		A1E47E5B1598E2B60013FE12 /* ChatBubbleGreen@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ChatBubbleGreen@2x.png"; sourceTree = "<group>"; };
+		A1E47E621598E2C20013FE12 /* SendButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SendButton.png; sourceTree = "<group>"; };
 		A1F78D1A158D4A1C0059FF78 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		A1F78D42158D4A1C0059FF78 /* Facebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Facebook.h; sourceTree = "<group>"; };
 		A1F78D43158D4A1C0059FF78 /* Facebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Facebook.m; sourceTree = "<group>"; };
@@ -521,6 +533,12 @@
 		A1279315158D1CB80014DC8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A1E47E621598E2C20013FE12 /* SendButton.png */,
+				A1E47E571598E2B60013FE12 /* ChatBar.png */,
+				A1E47E581598E2B60013FE12 /* ChatBubbleGray.png */,
+				A1E47E591598E2B60013FE12 /* ChatBubbleGray@2x.png */,
+				A1E47E5A1598E2B60013FE12 /* ChatBubbleGreen.png */,
+				A1E47E5B1598E2B60013FE12 /* ChatBubbleGreen@2x.png */,
 				A113CAE115967EB700807CF1 /* defaultPerson.png */,
 				A1279311158D1A6B0014DC8D /* icon.png */,
 				A1279312158D1A6B0014DC8D /* icon@2x.png */,
@@ -1116,6 +1134,12 @@
 				A1F78D8A158D4A1C0059FF78 /* FBDialog.bundle in Resources */,
 				A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */,
 				A113CAE215967EB700807CF1 /* defaultPerson.png in Resources */,
+				A1E47E5C1598E2B60013FE12 /* ChatBar.png in Resources */,
+				A1E47E5D1598E2B60013FE12 /* ChatBubbleGray.png in Resources */,
+				A1E47E5E1598E2B60013FE12 /* ChatBubbleGray@2x.png in Resources */,
+				A1E47E5F1598E2B60013FE12 /* ChatBubbleGreen.png in Resources */,
+				A1E47E601598E2B60013FE12 /* ChatBubbleGreen@2x.png in Resources */,
+				A1E47E631598E2C20013FE12 /* SendButton.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

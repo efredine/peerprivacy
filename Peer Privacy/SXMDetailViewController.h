@@ -8,10 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SXMDetailViewController : UIViewController 
+@interface SXMDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate>
+@property (nonatomic, retain) UITableView *chatContent;
 
-@property (strong, nonatomic) id detailItem;
+@property (nonatomic, retain) UIImageView *chatBar;
+@property (nonatomic, retain) UITextView *chatInput;
+@property (nonatomic, assign) CGFloat previousContentHeight;
+@property (nonatomic, retain) UIButton *sendButton;
 
-@property (strong, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+- (void)enableSendButton;
+- (void)disableSendButton;
+- (void)resetSendButton;
+
+- (void)keyboardWillShow:(NSNotification *)notification;
+- (void)keyboardWillHide:(NSNotification *)notification;
+- (void)resizeViewWithOptions:(NSDictionary *)options;
+- (void)scrollToBottomAnimated:(BOOL)animated;
+
+- (void)sendMessage;
 
 @end
