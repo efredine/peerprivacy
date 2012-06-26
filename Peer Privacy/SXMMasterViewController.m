@@ -75,11 +75,37 @@
     [self performSegueWithIdentifier:@"conversationStarterSegue" sender:self];
 }
 
-#pragma mark - core data access helper
+#pragma mark - Roster core data access helper
 
 - (NSManagedObjectContext *)managedObjectContext_roster
 {
 	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
+}
+
+- (XMPPUserCoreDataStorageObject *) userWithJid: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr
+{
+    XMPPUserCoreDataStorageObject *user = nil;
+    NSManagedObjectContext *moc = [self managedObjectContext_roster];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
+                              jidStr, 
+                              streamBareJidStr];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    if (array != nil)
+    {
+        user = [array objectAtIndex:0];
+    }
+    return user;
 }
 
 #pragma mark - Table View
@@ -133,9 +159,10 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
-//        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-//        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-//        [[segue destinationViewController] setDetailItem:object];
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        [[segue destinationViewController] setConversation:object];
+        [[segue destinationViewController] setManagedObjectContext:self.managedObjectContext];
     }
     else if ([[segue identifier] isEqualToString:@"conversationStarterSegue"])
     {
@@ -263,30 +290,14 @@
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     NSString *streamBareJidStr = [object valueForKey:@"streamBareJidStr"];
     NSString *jidStr = [object valueForKey:@"jidStr"];
+    XMPPUserCoreDataStorageObject *user = [self userWithJid:jidStr andStreamBareJidStr:streamBareJidStr];
     
-    NSManagedObjectContext *moc = [self managedObjectContext_roster];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
-                              jidStr, 
-                              streamBareJidStr];
-    [request setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [moc executeFetchRequest:request error:&error];
-    if (array == nil)
+    if (user == nil)
     {
         // didn't find it
         cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", streamBareJidStr, jidStr];
     }
     else {
-        XMPPUserCoreDataStorageObject *user = [array objectAtIndex:0];
         cell.textLabel.text = user.displayName;
         [self configurePhotoForCell:cell user:user];
     }
@@ -324,6 +335,8 @@
     NSLog(@"New Message cancelled");
     [self dismissViewControllerAnimated:YES completion: nil];
 }
+
+
 
 
 @end

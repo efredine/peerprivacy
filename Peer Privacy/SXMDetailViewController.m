@@ -7,6 +7,7 @@
 //
 
 #import "SXMDetailViewController.h"
+#import "XMPPRosterCoreDataStorage.h"
 
 #define CHAT_BACKGROUND_COLOR [UIColor colorWithRed:0.859f green:0.886f blue:0.929f alpha:1.0f]
 
@@ -46,6 +47,11 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 
 @implementation SXMDetailViewController
 
+@synthesize fetchedResultsController = __fetchedResultsController;
+@synthesize managedObjectContext = __managedObjectContext;
+
+@synthesize conversation;
+
 @synthesize chatContent;
 
 @synthesize chatBar;
@@ -60,7 +66,11 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 	// Do any additional setup after loading the view, typically from a nib.
     NSLog(@"viewDidLoad");
     
-    self.title = @"Chat View";
+    XMPPUserCoreDataStorageObject *user = 
+        [self   userWithJid:[conversation valueForKey:@"jidStr"]
+                andStreamBareJidStr:[conversation valueForKey:@"streamBareJidStr"]];
+    
+    self.title = user.displayName;
     
     // Listen for keyboard.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
@@ -174,11 +184,14 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+    
     // Release any retained subviews of the main view.
     self.chatBar = nil;
     [chatInput removeObserver:self forKeyPath:@"contentSize"];
     self.chatInput = nil;
     self.sendButton = nil;
+    self.conversation = nil;
+    self.fetchedResultsController = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -198,6 +211,39 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+#pragma mark - roster core data access helper
+
+- (NSManagedObjectContext *)managedObjectContext_roster
+{
+	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
+}
+
+- (XMPPUserCoreDataStorageObject *) userWithJid: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr
+{
+    XMPPUserCoreDataStorageObject *user = nil;
+    NSManagedObjectContext *moc = [self managedObjectContext_roster];
+    
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
+    
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    [request setEntity:entityDescription];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
+                              jidStr, 
+                              streamBareJidStr];
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
+    if (array != nil)
+    {
+        user = [array objectAtIndex:0];
+    }
+    return user;
 }
 
 #pragma mark UITextViewDelegate
@@ -313,11 +359,11 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     NSLog(@"viewFrame y: %@", NSStringFromCGRect(viewFrame));
     
     // // For testing.
-    NSLog(@"keyboardEnd: %@", NSStringFromCGRect(keyboardEndFrame));
-    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]
-    initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-    target:chatInput action:@selector(resignFirstResponder)];
-    self.navigationItem.leftBarButtonItem = doneButton;
+//    NSLog(@"keyboardEnd: %@", NSStringFromCGRect(keyboardEndFrame));
+//    UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]
+//    initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+//    target:chatInput action:@selector(resignFirstResponder)];
+//    self.navigationItem.leftBarButtonItem = doneButton;
     
     CGRect keyboardFrameEndRelative = [self.view convertRect:keyboardEndFrame fromView:nil];
     NSLog(@"self.view: %@", self.view);
@@ -334,25 +380,42 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 }
 
 - (void)scrollToBottomAnimated:(BOOL)animated {
-//    NSInteger bottomRow = [cellMap count] - 1;
-//    if (bottomRow >= 0) {
-//        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:bottomRow inSection:0];
-//        [chatContent scrollToRowAtIndexPath:indexPath
-//                           atScrollPosition:UITableViewScrollPositionBottom animated:animated];
-//    }
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];    
+    NSInteger numRows = [sectionInfo numberOfObjects];
+    if (numRows >= 0) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:numRows-1 inSection:0];
+        [chatContent scrollToRowAtIndexPath:indexPath
+                           atScrollPosition:UITableViewScrollPositionBottom animated:animated];
+    }
 }
 
 #pragma mark UITableViewDataSource
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 0;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return [[self.fetchedResultsController sections] count];
 }
 
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:section];
+    return [sectionInfo numberOfObjects];
+}
+
+static NSString *kMessageCell = @"MessageCell";
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return nil;
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath 
+{
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kMessageCell];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                       reuseIdentifier:kMessageCell];
+        
+    }
+    [self configureCell:cell atIndexPath:indexPath];
+    return cell;
 }
 
 #pragma mark Message Handling
@@ -360,7 +423,144 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)sendMessage
 {
     NSLog(@"Send message");
+    
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+    
+    NSDate *now = [NSDate date];
+    [newManagedObject setValue:now forKey:@"localTimestamp"];
+    [newManagedObject setValue:self.conversation forKey:@"conversation"];
+    [newManagedObject setValue:self.chatInput.text forKey:@"body"];
+    [newManagedObject setValue:[NSNumber numberWithInt:1] forKey:@"fromMe"];
+    
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    [self clearChatInput];
+    [self scrollToBottomAnimated:YES]; // must come after RESET_CHAT_BAR_HEIGHT above
 }
 
+- (void)clearChatInput {
+    chatInput.text = @"";
+    if (previousContentHeight > 22.0f) {
+        RESET_CHAT_BAR_HEIGHT;
+        chatInput.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
+//        chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
+        [self scrollToBottomAnimated:YES];
+    }
+}
+
+
+
+#pragma mark - Fetched results controller
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (__fetchedResultsController != nil) {
+        return __fetchedResultsController;
+    }
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    // Edit the entity name as appropriate.
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                              @"conversation == %@", 
+                              self.conversation];
+    [fetchRequest setPredicate:predicate];
+
+    // Edit the sort key as appropriate.
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"localTimestamp" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortDescriptor, nil];
+    
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Edit the section name key path and cache name if appropriate.
+    // nil for section name key path means "no sections".
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+	NSError *error = nil;
+	if (![self.fetchedResultsController performFetch:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
+	    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+	    abort();
+	}
+    
+    return __fetchedResultsController;
+}    
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.chatContent beginUpdates];
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id <NSFetchedResultsSectionInfo>)sectionInfo
+           atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [self.chatContent insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [self.chatContent deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
+       atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
+      newIndexPath:(NSIndexPath *)newIndexPath
+{
+    UITableView *tableView = self.chatContent;
+    
+    switch(type) {
+        case NSFetchedResultsChangeInsert:
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeDelete:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            break;
+            
+        case NSFetchedResultsChangeUpdate:
+            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            break;
+            
+        case NSFetchedResultsChangeMove:
+            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+            break;
+    }
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [self.chatContent endUpdates];
+}
+
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+
+    NSValue *fromMe = [object valueForKey:@"fromMe"];
+    NSString *destString = (fromMe) ? @"FROM:" : @"TO:";
+    NSString *body = [object valueForKey:@"body"];
+    
+    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ %@", destString, body];
+      
+}
 
 @end

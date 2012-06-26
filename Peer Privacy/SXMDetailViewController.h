@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface SXMDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate>
+@interface SXMDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, NSFetchedResultsControllerDelegate>
+
+@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+
+@property (nonatomic, strong) id conversation;
+
 @property (nonatomic, retain) UITableView *chatContent;
 
 @property (nonatomic, retain) UIImageView *chatBar;
