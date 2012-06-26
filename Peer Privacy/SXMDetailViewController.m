@@ -306,12 +306,12 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 }
 
 
-// Fix a scrolling quirk.
-//- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
-// replacementText:(NSString *)text {
-//    textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
-//    return YES;
-//}
+ // Fix a scrolling quirk.
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
+ replacementText:(NSString *)text {
+    textView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
+    return YES;
+}
 
 #pragma mark ChatViewController
 
@@ -382,7 +382,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)scrollToBottomAnimated:(BOOL)animated {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];    
     NSInteger numRows = [sectionInfo numberOfObjects];
-    if (numRows >= 0) {
+    if (numRows > 0) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:numRows-1 inSection:0];
         [chatContent scrollToRowAtIndexPath:indexPath
                            atScrollPosition:UITableViewScrollPositionBottom animated:animated];
@@ -403,20 +403,59 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 }
 
 static NSString *kMessageCell = @"MessageCell";
+#define SENT_DATE_TAG 101
+#define TEXT_TAG 102
+#define BACKGROUND_TAG 103
+
 
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView
          cellForRowAtIndexPath:(NSIndexPath *)indexPath 
 {
+    UIImageView *msgBackground;
+    UILabel *msgText;
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kMessageCell];
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                        reuseIdentifier:kMessageCell];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
+        // Create message background image view
+        msgBackground = [[UIImageView alloc] init];
+        msgBackground.clearsContextBeforeDrawing = NO;
+        msgBackground.tag = BACKGROUND_TAG;
+        msgBackground.backgroundColor = CHAT_BACKGROUND_COLOR; // clearColor slows performance
+        [cell.contentView addSubview:msgBackground];
+        
+        // Create message text label
+        msgText = [[UILabel alloc] init];
+        msgText.clearsContextBeforeDrawing = NO;
+        msgText.tag = TEXT_TAG;
+        msgText.backgroundColor = [UIColor clearColor];
+        msgText.numberOfLines = 0;
+        msgText.lineBreakMode = UILineBreakModeWordWrap;
+        msgText.font = [UIFont systemFontOfSize:kMessageFontSize];
+        [cell.contentView addSubview:msgText];
     }
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    // NSLog(@"height for row: %d", [indexPath row]);
+    
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    NSString *body = [object valueForKey:@"body"];
+    
+    // Set MessageCell height.
+    CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:kMessageFontSize]
+                                       constrainedToSize:CGSizeMake(kMessageTextWidth, CGFLOAT_MAX)
+                                           lineBreakMode:UILineBreakModeWordWrap];
+    return size.height + 17.0f;
+}
+
+
 
 #pragma mark Message Handling
 
@@ -556,11 +595,44 @@ static NSString *kMessageCell = @"MessageCell";
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
     NSValue *fromMe = [object valueForKey:@"fromMe"];
-    NSString *destString = (fromMe) ? @"FROM:" : @"TO:";
     NSString *body = [object valueForKey:@"body"];
     
-    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ %@", destString, body];
-      
+    UIImageView *msgBackground;
+    UILabel *msgText;
+
+    msgBackground = (UIImageView *)[cell.contentView viewWithTag:BACKGROUND_TAG];
+    msgText = (UILabel *)[cell.contentView viewWithTag:TEXT_TAG];
+    
+    // Configure the cell to show the message in a bubble. Layout message cell & its subviews.
+    CGSize size = [body sizeWithFont:[UIFont systemFontOfSize:kMessageFontSize]
+                                       constrainedToSize:CGSizeMake(kMessageTextWidth, CGFLOAT_MAX)
+                                           lineBreakMode:UILineBreakModeWordWrap];
+    UIImage *bubbleImage;
+    if (fromMe) { // right bubble
+        CGFloat editWidth = self.chatContent.editing ? 32.0f : 0.0f;
+        msgBackground.frame = CGRectMake(self.chatContent.frame.size.width-size.width-34.0f-editWidth,
+                                         kMessageFontSize-13.0f, size.width+34.0f,
+                                         size.height+12.0f);
+        bubbleImage = [[UIImage imageNamed:@"ChatBubbleGreen.png"]
+                       stretchableImageWithLeftCapWidth:15 topCapHeight:13];
+        msgText.frame = CGRectMake(self.chatContent.frame.size.width-size.width-22.0f-editWidth,
+                                   kMessageFontSize-9.0f, size.width+5.0f, size.height);
+        msgBackground.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        msgText.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        // // Uncomment for view layout debugging.
+        // cell.contentView.backgroundColor = [UIColor blueColor];
+    } else { // left bubble
+        msgBackground.frame = CGRectMake(0.0f, kMessageFontSize-13.0f,
+                                         size.width+34.0f, size.height+12.0f);
+        bubbleImage = [[UIImage imageNamed:@"ChatBubbleGray.png"]
+                       stretchableImageWithLeftCapWidth:23 topCapHeight:15];
+        msgText.frame = CGRectMake(22.0f, kMessageFontSize-9.0f, size.width+5.0f, size.height);
+        msgBackground.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+        msgText.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+    }
+    msgBackground.image = bubbleImage;
+    msgText.text = body;
+    
 }
 
 @end
