@@ -35,4 +35,6 @@
 - (BOOL)connect;
 - (void)disconnect;
 
+- (void) sendMessageWithBody: (NSString *)messageStr andJidStr: (NSString *)jidStr;
+
 @end

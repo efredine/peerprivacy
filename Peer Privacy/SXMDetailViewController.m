@@ -6,8 +6,11 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import "SXMAppDelegate.h"
 #import "SXMDetailViewController.h"
 #import "XMPPRosterCoreDataStorage.h"
+#import "SXMStreamManager.h"
+#import "SXMMultiStreamManager.h"
 
 #define CHAT_BACKGROUND_COLOR [UIColor colorWithRed:0.859f green:0.886f blue:0.929f alpha:1.0f]
 
@@ -59,6 +62,10 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 @synthesize previousContentHeight;
 @synthesize sendButton;
 
+- (SXMAppDelegate *)appDelegate
+{
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 - (void)viewDidLoad
 {
@@ -382,7 +389,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)scrollToBottomAnimated:(BOOL)animated {
     id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];    
     NSInteger numRows = [sectionInfo numberOfObjects];
-    if (numRows > 0) {
+    if (numRows > 1) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:numRows-1 inSection:0];
         [chatContent scrollToRowAtIndexPath:indexPath
                            atScrollPosition:UITableViewScrollPositionBottom animated:animated];
@@ -466,6 +473,14 @@ static NSString *kMessageCell = @"MessageCell";
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
     NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
     NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+
+    NSString *streamBareJidStr = [conversation valueForKey:@"streamBareJidStr"];
+    NSString *jidStr = [conversation valueForKey:@"jidStr"];
+    
+    SXMMultiStreamManager *msm = [[self appDelegate] multiStreamManager];
+    SXMStreamManager *streamManager = [msm streamManagerforStreamBareJidStr:streamBareJidStr];
+    
+    [streamManager sendMessageWithBody:self.chatInput.text andJidStr:jidStr];
     
     NSDate *now = [NSDate date];
     [newManagedObject setValue:now forKey:@"localTimestamp"];
@@ -490,7 +505,7 @@ static NSString *kMessageCell = @"MessageCell";
         RESET_CHAT_BAR_HEIGHT;
         chatInput.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
 //        chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
-        [self scrollToBottomAnimated:YES];
+//        [self scrollToBottomAnimated:YES];
     }
 }
 
@@ -588,13 +603,15 @@ static NSString *kMessageCell = @"MessageCell";
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
     [self.chatContent endUpdates];
+    [self scrollToBottomAnimated:YES];
 }
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
     NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSValue *fromMe = [object valueForKey:@"fromMe"];
+    NSNumber *fromMe = [object valueForKey:@"fromMe"];
+    BOOL fromMeBool = [fromMe boolValue];
     NSString *body = [object valueForKey:@"body"];
     
     UIImageView *msgBackground;
@@ -608,7 +625,7 @@ static NSString *kMessageCell = @"MessageCell";
                                        constrainedToSize:CGSizeMake(kMessageTextWidth, CGFLOAT_MAX)
                                            lineBreakMode:UILineBreakModeWordWrap];
     UIImage *bubbleImage;
-    if (fromMe) { // right bubble
+    if (fromMeBool) { // right bubble
         CGFloat editWidth = self.chatContent.editing ? 32.0f : 0.0f;
         msgBackground.frame = CGRectMake(self.chatContent.frame.size.width-size.width-34.0f-editWidth,
                                          kMessageFontSize-13.0f, size.width+34.0f,

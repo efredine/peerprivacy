@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
+#import "SXMAppDelegate.h"
 #import "SXMStreamManager.h"
 
 #import "GCDAsyncSocket.h"
@@ -49,6 +50,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize allowSelfSignedCertificates;
 @synthesize allowSSLHostNameMismatch;
 @synthesize isXmppConnected;
+
+- (SXMAppDelegate *)appDelegate
+{
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 - (id)init
 {
@@ -284,6 +290,22 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	[xmppStream disconnect];
 }
 
+#pragma mark sendMessage
+
+- (void) sendMessageWithBody: (NSString *)messageStr andJidStr: (NSString *)jidStr
+{
+    NSXMLElement *body = [NSXMLElement elementWithName:@"body"];
+    [body setStringValue:messageStr];
+    
+    NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
+    [message addAttributeWithName:@"type" stringValue:@"chat"];
+    [message addAttributeWithName:@"to" stringValue:jidStr];
+    [message addChild:body];
+    
+    [xmppStream sendElement:message];
+    
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark XMPPStream Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -329,31 +351,72 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
 	if ([message isChatMessageWithBody])
 	{
-		XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[message from]
-		                                                         xmppStream:xmppStream
-		                                               managedObjectContext:[self managedObjectContext_roster]];
+//		XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[message from]
+//		                                                         xmppStream:xmppStream
+//		                                               managedObjectContext:[self managedObjectContext_roster]];
+//		NSString *displayName = [user displayName];
 		
 		NSString *body = [[message elementForName:@"body"] stringValue];
-		NSString *displayName = [user displayName];
+        NSString *jidStr = [[message from] bare];
+        NSString *streamBareJidStr = self.xmppStream.myJID.bare;
         
-		if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
-		{
-			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
-                                                                message:body 
-                                                               delegate:nil 
-                                                      cancelButtonTitle:@"Ok" 
-                                                      otherButtonTitles:nil];
-			[alertView show];
-		}
-		else
-		{
-			// We are not active, so use a local notification instead
-			UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-			localNotification.alertAction = @"Ok";
-			localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
-            
-			[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-		}
+        NSManagedObjectContext *moc = [[self appDelegate] managedObjectContext];
+        NSEntityDescription *conversationEntityDescription = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:moc];
+        NSFetchRequest *conversationRequest = [[NSFetchRequest alloc] init];
+        [conversationRequest setEntity:conversationEntityDescription];
+        
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:
+                                  @"(jidStr == %@) AND (streamBareJidStr== %@)", jidStr, streamBareJidStr];
+        [conversationRequest setPredicate:predicate];
+        
+        NSError *error = nil;
+        NSManagedObject *conversation = nil;
+        NSArray *array = [moc executeFetchRequest:conversationRequest error:&error];
+        if (array != nil)
+        {
+            conversation = [array objectAtIndex:0];
+        }
+        else 
+        {
+            NSLog(@"Eek - couldn't retrieve conversation");
+            return;
+        }
+        
+        NSEntityDescription *messageEntityDescription = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:moc];
+        
+        NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[messageEntityDescription name] inManagedObjectContext:moc];
+       
+        NSDate *now = [NSDate date];
+        [newManagedObject setValue:now forKey:@"localTimestamp"];
+        [newManagedObject setValue:conversation forKey:@"conversation"];
+        [newManagedObject setValue:body forKey:@"body"];
+        [newManagedObject setValue:[NSNumber numberWithInt:0] forKey:@"fromMe"];
+ 
+        // Save the context.
+        if (![moc save:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+        
+        
+//		if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
+//		{
+//			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
+//                                                                message:body 
+//                                                               delegate:nil 
+//                                                      cancelButtonTitle:@"Ok" 
+//                                                      otherButtonTitles:nil];
+//			[alertView show];
+//		}
+//		else
+//		{
+//			// We are not active, so use a local notification instead
+//			UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//			localNotification.alertAction = @"Ok";
+//			localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
+//            
+//			[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+//		}
 	}
 }
 
