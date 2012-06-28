@@ -16,9 +16,11 @@
 #define kFacebookStreamName @"facebook"
 #define kGoogleStreamName @"google"
 
-@interface SXMMultiStreamManager : NSObject
+@interface SXMStreamCoordinator : NSObject
 
-@property (nonatomic, strong) NSMutableDictionary *configuredStreams;
+@property (nonatomic, strong) NSMutableDictionary *streamDictionary;
+
++ (SXMStreamCoordinator *) sharedInstance;
 
 - (SXMStreamManager *) streamManagerforName: (NSString *)streamName;
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;

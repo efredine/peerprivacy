@@ -8,7 +8,6 @@
 
 #import "SXMNewMessageController.h"
 #import "SXMAppDelegate.h"
-#import "SXMMultiStreamManager.h"
 #import "SXMStreamManager.h"
 #import "XMPPFramework.h"
 #import "DDLog.h"
@@ -224,7 +223,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	} 
 	else
 	{
-        SXMStreamManager *streamManager = [[[self appDelegate] multiStreamManager] streamManagerforStreamBareJidStr:user.streamBareJidStr];
+        SXMStreamManager *streamManager = [[[self appDelegate] streamCoordinator] streamManagerforStreamBareJidStr:user.streamBareJidStr];
 		NSData *photoData = [[streamManager xmppvCardAvatarModule] photoDataForJID:user.jid];
         
 		if (photoData != nil)

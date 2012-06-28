@@ -9,7 +9,6 @@
 #import "XMPPRosterCoreDataStorage.h"
 #import "SXMMasterViewController.h"
 #import "SXMDetailViewController.h"
-#import "SXMMultiStreamManager.h"
 #import "SXMStreamManager.h"
 #import "SXMAppDelegate.h"
 
@@ -185,7 +184,7 @@
 	} 
 	else
 	{
-        SXMStreamManager *streamManager = [[[self appDelegate] multiStreamManager] streamManagerforStreamBareJidStr:user.streamBareJidStr];
+        SXMStreamManager *streamManager = [[[self appDelegate] streamCoordinator] streamManagerforStreamBareJidStr:user.streamBareJidStr];
 		NSData *photoData = [[streamManager xmppvCardAvatarModule] photoDataForJID:user.jid];
         
 		if (photoData != nil)

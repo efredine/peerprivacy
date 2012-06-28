@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XMPPFramework.h"
-#import "SXMMultiStreamManager.h"
+#import "SXMStreamCoordinator.h"
 
 
 @interface SXMAppDelegate : UIResponder <UIApplicationDelegate>
@@ -20,7 +20,7 @@
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
-@property (strong, nonatomic) SXMMultiStreamManager *multiStreamManager;
+@property (strong, nonatomic) SXMStreamCoordinator *streamCoordinator;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;

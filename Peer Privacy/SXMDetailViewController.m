@@ -10,7 +10,7 @@
 #import "SXMDetailViewController.h"
 #import "XMPPRosterCoreDataStorage.h"
 #import "SXMStreamManager.h"
-#import "SXMMultiStreamManager.h"
+#import "SXMStreamCoordinator.h"
 
 #define CHAT_BACKGROUND_COLOR [UIColor colorWithRed:0.859f green:0.886f blue:0.929f alpha:1.0f]
 
@@ -477,7 +477,7 @@ static NSString *kMessageCell = @"MessageCell";
     NSString *streamBareJidStr = [conversation valueForKey:@"streamBareJidStr"];
     NSString *jidStr = [conversation valueForKey:@"jidStr"];
     
-    SXMMultiStreamManager *msm = [[self appDelegate] multiStreamManager];
+    SXMStreamCoordinator *msm = [[self appDelegate] streamCoordinator];
     SXMStreamManager *streamManager = [msm streamManagerforStreamBareJidStr:streamBareJidStr];
     
     [streamManager sendMessageWithBody:self.chatInput.text andJidStr:jidStr];

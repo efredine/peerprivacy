@@ -44,7 +44,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize managedObjectModel = __managedObjectModel;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
-@synthesize multiStreamManager;
+@synthesize streamCoordinator;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -66,7 +66,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     controller.managedObjectContext = self.managedObjectContext;
 
     // The XMPP streams
-    multiStreamManager = [[SXMMultiStreamManager alloc] init];
+    self.streamCoordinator = [SXMStreamCoordinator sharedInstance];
     
     return YES;
 }
@@ -220,7 +220,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
-    SXMStreamManager *facebookStreamManager = [multiStreamManager streamManagerforName:kFacebookStreamName];
+    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforName:kFacebookStreamName];
     
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 }
@@ -231,7 +231,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
    	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
-    SXMStreamManager *facebookStreamManager = [multiStreamManager streamManagerforName:kFacebookStreamName];
+    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforName:kFacebookStreamName];
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 
 }
