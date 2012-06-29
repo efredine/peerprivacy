@@ -18,8 +18,8 @@
 		A12792E6158D19F20014DC8D /* SXMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792E5158D19F20014DC8D /* SXMAppDelegate.m */; };
 		A12792E9158D19F20014DC8D /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */; };
 		A12792EC158D19F20014DC8D /* Peer_Privacy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A12792EA158D19F20014DC8D /* Peer_Privacy.xcdatamodeld */; };
-		A12792EF158D19F20014DC8D /* SXMMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792EE158D19F20014DC8D /* SXMMasterViewController.m */; };
-		A12792F2158D19F20014DC8D /* SXMDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792F1158D19F20014DC8D /* SXMDetailViewController.m */; };
+		A12792EF158D19F20014DC8D /* SXMConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792EE158D19F20014DC8D /* SXMConversationViewController.m */; };
+		A12792F2158D19F20014DC8D /* SXMMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792F1158D19F20014DC8D /* SXMMessageViewController.m */; };
 		A12792FA158D19F20014DC8D /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792F9158D19F20014DC8D /* SenTestingKit.framework */; };
 		A12792FB158D19F20014DC8D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D3158D19F20014DC8D /* UIKit.framework */; };
 		A12792FC158D19F20014DC8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D5158D19F20014DC8D /* Foundation.framework */; };
@@ -167,10 +167,10 @@
 		A12792E5158D19F20014DC8D /* SXMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMAppDelegate.m; sourceTree = "<group>"; };
 		A12792E8158D19F20014DC8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		A12792EB158D19F20014DC8D /* Peer_Privacy.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Peer_Privacy.xcdatamodel; sourceTree = "<group>"; };
-		A12792ED158D19F20014DC8D /* SXMMasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SXMMasterViewController.h; sourceTree = "<group>"; };
-		A12792EE158D19F20014DC8D /* SXMMasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMMasterViewController.m; sourceTree = "<group>"; };
-		A12792F0158D19F20014DC8D /* SXMDetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SXMDetailViewController.h; sourceTree = "<group>"; };
-		A12792F1158D19F20014DC8D /* SXMDetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMDetailViewController.m; sourceTree = "<group>"; };
+		A12792ED158D19F20014DC8D /* SXMConversationViewController.h */ = {isa = PBXFileReference; path = SXMConversationViewController.h; sourceTree = "<group>"; };
+		A12792EE158D19F20014DC8D /* SXMConversationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMConversationViewController.m; sourceTree = "<group>"; };
+		A12792F0158D19F20014DC8D /* SXMMessageViewController.h */ = {isa = PBXFileReference; path = SXMMessageViewController.h; sourceTree = "<group>"; };
+		A12792F1158D19F20014DC8D /* SXMMessageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMMessageViewController.m; sourceTree = "<group>"; };
 		A12792F8158D19F20014DC8D /* Peer PrivacyTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Peer PrivacyTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A12792F9158D19F20014DC8D /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		A1279302158D19F20014DC8D /* Peer PrivacyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Peer PrivacyTests-Info.plist"; sourceTree = "<group>"; };
@@ -487,10 +487,10 @@
 				A19AE625158E681400B8DF3C /* SXMStreamManager.h */,
 				A19AE626158E681400B8DF3C /* SXMStreamManager.m */,
 				A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */,
-				A12792ED158D19F20014DC8D /* SXMMasterViewController.h */,
-				A12792EE158D19F20014DC8D /* SXMMasterViewController.m */,
-				A12792F0158D19F20014DC8D /* SXMDetailViewController.h */,
-				A12792F1158D19F20014DC8D /* SXMDetailViewController.m */,
+				A12792ED158D19F20014DC8D /* SXMConversationViewController.h */,
+				A12792EE158D19F20014DC8D /* SXMConversationViewController.m */,
+				A12792F0158D19F20014DC8D /* SXMMessageViewController.h */,
+				A12792F1158D19F20014DC8D /* SXMMessageViewController.m */,
 				A12792EA158D19F20014DC8D /* Peer_Privacy.xcdatamodeld */,
 				A12792DC158D19F20014DC8D /* Supporting Files */,
 				A19AE639158EC71400B8DF3C /* SXMStreamCoordinator.h */,
@@ -1182,8 +1182,8 @@
 				A12792E2158D19F20014DC8D /* main.m in Sources */,
 				A12792E6158D19F20014DC8D /* SXMAppDelegate.m in Sources */,
 				A12792EC158D19F20014DC8D /* Peer_Privacy.xcdatamodeld in Sources */,
-				A12792EF158D19F20014DC8D /* SXMMasterViewController.m in Sources */,
-				A12792F2158D19F20014DC8D /* SXMDetailViewController.m in Sources */,
+				A12792EF158D19F20014DC8D /* SXMConversationViewController.m in Sources */,
+				A12792F2158D19F20014DC8D /* SXMMessageViewController.m in Sources */,
 				A1279329158D1EDA0014DC8D /* DDAbstractDatabaseLogger.m in Sources */,
 				A127932A158D1EDA0014DC8D /* DDASLLogger.m in Sources */,
 				A127932B158D1EDA0014DC8D /* DDFileLogger.m in Sources */,

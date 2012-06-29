@@ -6,18 +6,18 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SXMMasterViewController.h"
-#import "SXMDetailViewController.h"
+#import "SXMConversationViewController.h"
+#import "SXMMessageViewController.h"
 #import "SXMStreamManager.h"
 #import "SXMAppDelegate.h"
 #import "SXMConversation.h"
 
-@interface SXMMasterViewController ()
+@interface SXMConversationViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
 @property (nonatomic, strong) SXMConversation *conversationSelectedFromNewMessage;
 @end
 
-@implementation SXMMasterViewController
+@implementation SXMConversationViewController
 
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;

@@ -8,7 +8,7 @@
 
 #import "SXMAppDelegate.h"
 
-#import "SXMMasterViewController.h"
+#import "SXMConversationViewController.h"
 
 #import "GCDAsyncSocket.h"
 #import "XMPP.h"
@@ -62,7 +62,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     // Override point for customization after application launch.
     UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    SXMMasterViewController *controller = (SXMMasterViewController *)navigationController.topViewController;
+    SXMConversationViewController *controller = (SXMConversationViewController *)navigationController.topViewController;
     controller.managedObjectContext = self.managedObjectContext;
 
     // The XMPP streams

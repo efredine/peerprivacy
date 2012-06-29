@@ -7,7 +7,7 @@
 //
 
 #import "SXMAppDelegate.h"
-#import "SXMDetailViewController.h"
+#import "SXMMessageViewController.h"
 #import "XMPPRosterCoreDataStorage.h"
 #import "SXMStreamManager.h"
 #import "SXMStreamCoordinator.h"
@@ -45,10 +45,10 @@ static CGFloat const kChatBarHeight1 = 40.0f;
 static CGFloat const kChatBarHeight4 = 94.0f;
 
 
-@interface SXMDetailViewController ()
+@interface SXMMessageViewController ()
 @end
 
-@implementation SXMDetailViewController
+@implementation SXMMessageViewController
 
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;

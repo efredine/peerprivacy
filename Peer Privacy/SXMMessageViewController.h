@@ -10,7 +10,7 @@
 #import "SXMConversation.h"
 #import "SXMMessage.h"
 
-@interface SXMDetailViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, NSFetchedResultsControllerDelegate>
+@interface SXMMessageViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
