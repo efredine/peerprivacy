@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1171" systemVersion="11E53" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="Conversation" syncable="YES">
+    <entity name="SXMConversation" representedClassName="SXMConversation" syncable="YES">
         <attribute name="creationTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="jidStr" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="lastUpdatedTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
+        <attribute name="numUnread" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="streamBareJidStr" attributeType="String" indexed="YES" syncable="YES"/>
-        <relationship name="message" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="conversation" inverseEntity="Message" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SXMMessage" inverseName="conversation" inverseEntity="SXMMessage" syncable="YES"/>
     </entity>
-    <entity name="Message" syncable="YES">
+    <entity name="SXMMessage" representedClassName="SXMMessage" syncable="YES">
         <attribute name="body" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="fromMe" attributeType="Boolean" indexed="YES" syncable="YES"/>
         <attribute name="localTimestamp" optional="YES" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="read" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="type" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="conversation" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Conversation" inverseName="message" inverseEntity="Conversation" syncable="YES"/>
+        <relationship name="conversation" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SXMConversation" inverseName="messages" inverseEntity="SXMConversation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Conversation" positionX="-45" positionY="189" width="128" height="120"/>
-        <element name="Message" positionX="135" positionY="309" width="128" height="135"/>
+        <element name="SXMConversation" positionX="-45" positionY="189" width="128" height="135"/>
+        <element name="SXMMessage" positionX="135" positionY="309" width="128" height="135"/>
     </elements>
 </model>

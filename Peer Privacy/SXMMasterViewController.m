@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "XMPPRosterCoreDataStorage.h"
 #import "SXMMasterViewController.h"
 #import "SXMDetailViewController.h"
 #import "SXMStreamManager.h"
 #import "SXMAppDelegate.h"
+#import "SXMConversation.h"
 
 @interface SXMMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -53,59 +53,10 @@
 }
 
 - (void)composeNewMessage:(id)sender
-{
-//    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-//    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-//    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-//    
-//    // If appropriate, configure the new managed object.
-//    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-//    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-//    
-//    // Save the context.
-//    NSError *error = nil;
-//    if (![context save:&error]) {
-//         // Replace this implementation with code to handle the error appropriately.
-//         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. 
-//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-//        abort();
-//    }
-    
+{    
     [self performSegueWithIdentifier:@"conversationStarterSegue" sender:self];
 }
 
-#pragma mark - Roster core data access helper
-
-- (NSManagedObjectContext *)managedObjectContext_roster
-{
-	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
-}
-
-- (XMPPUserCoreDataStorageObject *) userWithJid: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr
-{
-    XMPPUserCoreDataStorageObject *user = nil;
-    NSManagedObjectContext *moc = [self managedObjectContext_roster];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
-                              jidStr, 
-                              streamBareJidStr];
-    [request setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [moc executeFetchRequest:request error:&error];
-    if (array != nil)
-    {
-        user = [array objectAtIndex:0];
-    }
-    return user;
-}
 
 #pragma mark - Table View
 
@@ -159,8 +110,8 @@
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSManagedObject *object = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        [[segue destinationViewController] setConversation:object];
+        SXMConversation *conversation = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        [[segue destinationViewController] setConversation:conversation];
         [[segue destinationViewController] setManagedObjectContext:self.managedObjectContext];
     }
     else if ([[segue identifier] isEqualToString:@"conversationStarterSegue"])
@@ -205,7 +156,7 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SXMConversation" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
@@ -286,15 +237,11 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    NSString *streamBareJidStr = [object valueForKey:@"streamBareJidStr"];
-    NSString *jidStr = [object valueForKey:@"jidStr"];
-    XMPPUserCoreDataStorageObject *user = [self userWithJid:jidStr andStreamBareJidStr:streamBareJidStr];
-    
+    SXMConversation *conversation = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    XMPPUserCoreDataStorageObject *user = conversation.user;    
     if (user == nil)
     {
-        // didn't find it
-        cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ > %@", streamBareJidStr, jidStr];
+        NSLog(@"Didn't find user");
     }
     else {
         cell.textLabel.text = user.displayName;
@@ -309,14 +256,7 @@
     NSLog(@"New Message Selected");
     
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-    
-    NSDate *now = [NSDate date];
-    [newManagedObject setValue:now forKey:@"creationTimestamp"];
-    [newManagedObject setValue:now forKey:@"lastUpdatedTimestamp"];
-    [newManagedObject setValue:user.streamBareJidStr forKey:@"streamBareJidStr"];
-    [newManagedObject setValue:user.jid.full forKey:@"jidStr"];
+    [SXMConversation insertNewConversationForUser:user inManagedObjectContext:context];
     
     // Save the context.
     NSError *error = nil;
@@ -334,8 +274,5 @@
     NSLog(@"New Message cancelled");
     [self dismissViewControllerAnimated:YES completion: nil];
 }
-
-
-
 
 @end

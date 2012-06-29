@@ -73,11 +73,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 	// Do any additional setup after loading the view, typically from a nib.
     NSLog(@"viewDidLoad");
     
-    XMPPUserCoreDataStorageObject *user = 
-        [self   userWithJid:[conversation valueForKey:@"jidStr"]
-                andStreamBareJidStr:[conversation valueForKey:@"streamBareJidStr"]];
-    
-    self.title = user.displayName;
+    self.title = conversation.user.displayName;
     
     // Listen for keyboard.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
@@ -218,39 +214,6 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-#pragma mark - roster core data access helper
-
-- (NSManagedObjectContext *)managedObjectContext_roster
-{
-	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
-}
-
-- (XMPPUserCoreDataStorageObject *) userWithJid: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr
-{
-    XMPPUserCoreDataStorageObject *user = nil;
-    NSManagedObjectContext *moc = [self managedObjectContext_roster];
-    
-    NSEntityDescription *entityDescription = [NSEntityDescription
-                                              entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
-    
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    [request setEntity:entityDescription];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                              @"(jidStr == %@) AND (streamBareJidStr == %@)", 
-                              jidStr, 
-                              streamBareJidStr];
-    [request setPredicate:predicate];
-    
-    NSError *error = nil;
-    NSArray *array = [moc executeFetchRequest:request error:&error];
-    if (array != nil)
-    {
-        user = [array objectAtIndex:0];
-    }
-    return user;
 }
 
 #pragma mark UITextViewDelegate
@@ -470,24 +433,17 @@ static NSString *kMessageCell = @"MessageCell";
 {
     NSLog(@"Send message");
     
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-
-    NSString *streamBareJidStr = [conversation valueForKey:@"streamBareJidStr"];
-    NSString *jidStr = [conversation valueForKey:@"jidStr"];
-    
     SXMStreamCoordinator *msm = [[self appDelegate] streamCoordinator];
-    SXMStreamManager *streamManager = [msm streamManagerforStreamBareJidStr:streamBareJidStr];
+    SXMStreamManager *streamManager = [msm streamManagerforStreamBareJidStr:conversation.streamBareJidStr];
+    [streamManager sendMessageWithBody:self.chatInput.text andJidStr:conversation.jidStr];
+
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    SXMMessage *newMessage = [self.conversation insertNewMessageInManagedObjectContext:context];  
     
-    [streamManager sendMessageWithBody:self.chatInput.text andJidStr:jidStr];
-    
-    NSDate *now = [NSDate date];
-    [newManagedObject setValue:now forKey:@"localTimestamp"];
-    [newManagedObject setValue:self.conversation forKey:@"conversation"];
-    [newManagedObject setValue:self.chatInput.text forKey:@"body"];
-    [newManagedObject setValue:[NSNumber numberWithInt:1] forKey:@"fromMe"];
-    
+    newMessage.body = self.chatInput.text;
+    newMessage.fromMe = [NSNumber numberWithBool:YES];
+    newMessage.read = [NSNumber numberWithBool:YES];
+     
     // Save the context.
     NSError *error = nil;
     if (![context save:&error]) {
@@ -521,7 +477,7 @@ static NSString *kMessageCell = @"MessageCell";
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"SXMMessage" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.
@@ -608,11 +564,10 @@ static NSString *kMessageCell = @"MessageCell";
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    SXMMessage *message = [self.fetchedResultsController objectAtIndexPath:indexPath];
 
-    NSNumber *fromMe = [object valueForKey:@"fromMe"];
-    BOOL fromMeBool = [fromMe boolValue];
-    NSString *body = [object valueForKey:@"body"];
+    BOOL fromMeBool = [message.fromMe boolValue];
+    NSString *body = message.body;
     
     UIImageView *msgBackground;
     UILabel *msgText;

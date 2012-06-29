@@ -8,6 +8,8 @@
 
 #import "SXMAppDelegate.h"
 #import "SXMStreamManager.h"
+#import "SXMConversation.h"
+#import "SXMMessage.h"
 
 #import "GCDAsyncSocket.h"
 #import "XMPP.h"
@@ -360,40 +362,21 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         NSString *jidStr = [[message from] bare];
         NSString *streamBareJidStr = self.xmppStream.myJID.bare;
         
-        NSManagedObjectContext *moc = [[self appDelegate] managedObjectContext];
-        NSEntityDescription *conversationEntityDescription = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:moc];
-        NSFetchRequest *conversationRequest = [[NSFetchRequest alloc] init];
-        [conversationRequest setEntity:conversationEntityDescription];
+        NSManagedObjectContext *context = [[self appDelegate] managedObjectContext];
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:
-                                  @"(jidStr == %@) AND (streamBareJidStr== %@)", jidStr, streamBareJidStr];
-        [conversationRequest setPredicate:predicate];
-        
-        NSError *error = nil;
-        NSManagedObject *conversation = nil;
-        NSArray *array = [moc executeFetchRequest:conversationRequest error:&error];
-        if (array != nil)
-        {
-            conversation = [array objectAtIndex:0];
-        }
-        else 
-        {
-            NSLog(@"Eek - couldn't retrieve conversation");
-            return;
-        }
-        
-        NSEntityDescription *messageEntityDescription = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:moc];
-        
-        NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[messageEntityDescription name] inManagedObjectContext:moc];
-       
-        NSDate *now = [NSDate date];
-        [newManagedObject setValue:now forKey:@"localTimestamp"];
-        [newManagedObject setValue:conversation forKey:@"conversation"];
-        [newManagedObject setValue:body forKey:@"body"];
-        [newManagedObject setValue:[NSNumber numberWithInt:0] forKey:@"fromMe"];
- 
+        SXMConversation *conversation = [SXMConversation conversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
+        if (conversation == nil) {
+            conversation = [SXMConversation insertNewConversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
+        }   
+          
+        SXMMessage *newMessage = [conversation insertNewMessageInManagedObjectContext:context]; 
+        newMessage.body = body;
+        newMessage.fromMe = [NSNumber numberWithBool:NO];
+        newMessage.read = [NSNumber numberWithBool:NO];
+         
         // Save the context.
-        if (![moc save:&error]) {
+        NSError *error = nil;
+        if (![context save:&error]) {
             NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             abort();
         }
