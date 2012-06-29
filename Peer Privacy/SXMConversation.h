@@ -24,6 +24,8 @@
 
 + (SXMConversation *)conversationForJidStr: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context;
 
++ (SXMConversation *)conversationForUser: (XMPPUserCoreDataStorageObject *) user inManagedObjectContext: (NSManagedObjectContext *) context;
+
 + (SXMConversation *)insertNewConversationForJidStr:(NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context;
 
 + (SXMConversation *)insertNewConversationForUser: (XMPPUserCoreDataStorageObject *)user inManagedObjectContext: (NSManagedObjectContext *) context;

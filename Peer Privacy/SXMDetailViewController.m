@@ -153,7 +153,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     
     [self.view addSubview:chatBar];
     [self.view sendSubviewToBack:chatBar];
-    
+        
     // // Test with lots of messages.
     // NSDate *before = [NSDate date];
     // for (NSUInteger i = 0; i < 500; i++) {
@@ -171,6 +171,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     // NSLog(@"Mass message creation error %@, %@", error, [error userInfo]);
     // }
     // NSLog(@"Saving messages to disc takes %f seconds", [before timeIntervalSinceNow]);
+    
 }
 
 //-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -307,6 +308,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 # pragma mark Keyboard Notifications
 
 - (void)keyboardWillShow:(NSNotification *)notification {
+    NSLog(@"Keyboard will show");
     [self resizeViewWithOptions:[notification userInfo]];
 }
 

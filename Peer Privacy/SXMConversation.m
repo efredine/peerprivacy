@@ -21,7 +21,6 @@
 @dynamic numUnread;
 @dynamic messages;
 
-
 + (SXMConversation *)conversationForJidStr: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context
 {
     NSEntityDescription *conversationEntityDescription = [NSEntityDescription entityForName:@"SXMConversation" inManagedObjectContext:context];
@@ -42,6 +41,11 @@
     {
         return nil;
     }
+}
+
++ (SXMConversation *)conversationForUser: (XMPPUserCoreDataStorageObject *) user inManagedObjectContext: (NSManagedObjectContext *) context
+{
+    return [SXMConversation conversationForJidStr:user.jidStr andStreamBareJidStr:user.streamBareJidStr inManagedObjectContext:context];
 }
 
 + (SXMConversation *)insertNewConversationForJidStr:(NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context

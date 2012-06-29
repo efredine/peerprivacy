@@ -14,12 +14,14 @@
 
 @interface SXMMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+@property (nonatomic, strong) SXMConversation *conversationSelectedFromNewMessage;
 @end
 
 @implementation SXMMasterViewController
 
 @synthesize fetchedResultsController = __fetchedResultsController;
 @synthesize managedObjectContext = __managedObjectContext;
+@synthesize conversationSelectedFromNewMessage;
 
 - (SXMAppDelegate *)appDelegate
 {
@@ -45,6 +47,9 @@
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
+    self.fetchedResultsController = nil;
+    self.managedObjectContext = nil;
+    self.conversationSelectedFromNewMessage = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -109,8 +114,17 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        SXMConversation *conversation = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        SXMConversation *conversation = nil;
+        if (self.conversationSelectedFromNewMessage != nil) 
+        {
+            conversation = conversationSelectedFromNewMessage;
+            conversationSelectedFromNewMessage = nil;
+        }
+        else 
+        {
+            NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+            conversation = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        }
         [[segue destinationViewController] setConversation:conversation];
         [[segue destinationViewController] setManagedObjectContext:self.managedObjectContext];
     }
@@ -253,10 +267,13 @@
 
 - (void)SXMNewMessageController:(SXMNewMessageController *)sender withUser:(XMPPUserCoreDataStorageObject *)user {
     
-    NSLog(@"New Message Selected");
-    
     NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    [SXMConversation insertNewConversationForUser:user inManagedObjectContext:context];
+    
+    SXMConversation *selectedConversation = [SXMConversation conversationForUser:user inManagedObjectContext:context];
+    if (selectedConversation == nil) {
+        selectedConversation = [SXMConversation insertNewConversationForUser:user inManagedObjectContext:context];
+    }
+    self.conversationSelectedFromNewMessage = selectedConversation;
     
     // Save the context.
     NSError *error = nil;
@@ -265,8 +282,9 @@
         abort();
     }
     
-    [self.tableView reloadData];
     [self dismissViewControllerAnimated:YES completion: nil];
+    [self performSegueWithIdentifier:@"showDetail" sender:self];
+
 }
 
 - (void)SXMNewMessageControllerCancelled:(SXMNewMessageController *)sender
