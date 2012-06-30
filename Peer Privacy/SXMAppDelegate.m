@@ -61,9 +61,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     DDLogVerbose(@"Test DDLogVerbose!");
     
     // Override point for customization after application launch.
-    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-    SXMConversationViewController *controller = (SXMConversationViewController *)navigationController.topViewController;
-    controller.managedObjectContext = self.managedObjectContext;
+//    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+//    SXMConversationViewController *controller = (SXMConversationViewController *)navigationController.topViewController;
+//    controller.managedObjectContext = self.managedObjectContext;
 
     // The XMPP streams
     self.streamCoordinator = [SXMStreamCoordinator sharedInstance];

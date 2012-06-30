@@ -16,7 +16,7 @@
 		A12792E0158D19F20014DC8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A12792DE158D19F20014DC8D /* InfoPlist.strings */; };
 		A12792E2158D19F20014DC8D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792E1158D19F20014DC8D /* main.m */; };
 		A12792E6158D19F20014DC8D /* SXMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792E5158D19F20014DC8D /* SXMAppDelegate.m */; };
-		A12792E9158D19F20014DC8D /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */; };
+		A12792E9158D19F20014DC8D /* PeerPrivacy.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A12792E7158D19F20014DC8D /* PeerPrivacy.storyboard */; };
 		A12792EC158D19F20014DC8D /* Peer_Privacy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A12792EA158D19F20014DC8D /* Peer_Privacy.xcdatamodeld */; };
 		A12792EF158D19F20014DC8D /* SXMConversationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792EE158D19F20014DC8D /* SXMConversationViewController.m */; };
 		A12792F2158D19F20014DC8D /* SXMMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A12792F1158D19F20014DC8D /* SXMMessageViewController.m */; };
@@ -172,7 +172,7 @@
 		A12792E3158D19F20014DC8D /* Peer Privacy-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Peer Privacy-Prefix.pch"; sourceTree = "<group>"; };
 		A12792E4158D19F20014DC8D /* SXMAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SXMAppDelegate.h; sourceTree = "<group>"; };
 		A12792E5158D19F20014DC8D /* SXMAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMAppDelegate.m; sourceTree = "<group>"; };
-		A12792E8158D19F20014DC8D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
+		A12792E8158D19F20014DC8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/PeerPrivacy.storyboard; sourceTree = "<group>"; };
 		A12792EB158D19F20014DC8D /* Peer_Privacy.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Peer_Privacy.xcdatamodel; sourceTree = "<group>"; };
 		A12792ED158D19F20014DC8D /* SXMConversationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SXMConversationViewController.h; sourceTree = "<group>"; };
 		A12792EE158D19F20014DC8D /* SXMConversationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMConversationViewController.m; sourceTree = "<group>"; };
@@ -489,7 +489,7 @@
 				A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */,
 				A19AE625158E681400B8DF3C /* SXMStreamManager.h */,
 				A19AE626158E681400B8DF3C /* SXMStreamManager.m */,
-				A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */,
+				A12792E7158D19F20014DC8D /* PeerPrivacy.storyboard */,
 				A12792ED158D19F20014DC8D /* SXMConversationViewController.h */,
 				A12792EE158D19F20014DC8D /* SXMConversationViewController.m */,
 				A12792F0158D19F20014DC8D /* SXMMessageViewController.h */,
@@ -1174,7 +1174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A12792E0158D19F20014DC8D /* InfoPlist.strings in Resources */,
-				A12792E9158D19F20014DC8D /* MainStoryboard.storyboard in Resources */,
+				A12792E9158D19F20014DC8D /* PeerPrivacy.storyboard in Resources */,
 				A1279313158D1A6B0014DC8D /* icon.png in Resources */,
 				A1279314158D1A6B0014DC8D /* icon@2x.png in Resources */,
 				A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */,
@@ -1351,12 +1351,12 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		A12792E7158D19F20014DC8D /* MainStoryboard.storyboard */ = {
+		A12792E7158D19F20014DC8D /* PeerPrivacy.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A12792E8158D19F20014DC8D /* en */,
 			);
-			name = MainStoryboard.storyboard;
+			name = PeerPrivacy.storyboard;
 			sourceTree = "<group>";
 		};
 		A1279303158D19F20014DC8D /* InfoPlist.strings */ = {
@@ -1427,6 +1427,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Peer Privacy/Peer Privacy-Prefix.pch";
 				INFOPLIST_FILE = "Peer Privacy/Peer Privacy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Peer Privacy/XMPP/Vendor/libidn\"",
@@ -1442,6 +1443,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Peer Privacy/Peer Privacy-Prefix.pch";
 				INFOPLIST_FILE = "Peer Privacy/Peer Privacy-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Peer Privacy/XMPP/Vendor/libidn\"",

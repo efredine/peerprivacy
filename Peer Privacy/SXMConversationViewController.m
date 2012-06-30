@@ -41,6 +41,8 @@
 
     UIBarButtonItem *composeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(composeNewMessage:)];
     self.navigationItem.rightBarButtonItem = composeButton;
+    
+    self.managedObjectContext = [self appDelegate].managedObjectContext;
 }
 
 - (void)viewDidUnload
