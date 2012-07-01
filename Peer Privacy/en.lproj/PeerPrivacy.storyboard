@@ -6,12 +6,12 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="1181"/>
     </dependencies>
     <scenes>
-        <!--Navigation Controller - Item-->
+        <!--Navigation Controller - Conversations-->
         <scene sceneID="11">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="10" sceneMemberID="firstResponder"/>
                 <navigationController id="3" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="zVD-vK-evb"/>
+                    <tabBarItem key="tabBarItem" title="Conversations" image="08-chat.png" id="zVD-vK-evb"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="4">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -27,7 +27,7 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mgk-NZ-3X5" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tabBarController definesPresentationContext="YES" id="BBK-cf-yJ2" sceneMemberID="viewController">
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="QOJ-8G-3NF">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -46,22 +46,26 @@
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LIG-0w-aaG" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <tableViewController id="Swc-v6-dma" customClass="IASKAppSettingsViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Ou8-Rb-cxp">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="ogu-ZC-e5q">
                         <rect key="frame" x="0.0" y="64" width="320" height="367"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <connections>
+                            <outlet property="dataSource" destination="Swc-v6-dma" id="Zkh-bd-BeW"/>
+                            <outlet property="delegate" destination="Swc-v6-dma" id="cYZ-4s-01g"/>
+                        </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Root View Controller" id="AbJ-mt-qpY"/>
                 </tableViewController>
             </objects>
             <point key="canvasLocation" x="744" y="1355"/>
         </scene>
-        <!--Navigation Controller - Item-->
+        <!--Navigation Controller - Settings-->
         <scene sceneID="dhj-Zv-rMi">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Q5s-Xt-uJg" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="o1R-mM-Q3E" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="fvV-g6-A4g"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="20-gear2.png" id="fvV-g6-A4g"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="smY-vH-Kgy">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -111,7 +115,7 @@
                             <outlet property="delegate" destination="12" id="15"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Messages" id="36"/>
+                    <navigationItem key="navigationItem" title="Conversations" id="36"/>
                     <connections>
                         <segue destination="MhZ-vj-02V" kind="modal" identifier="conversationStarterSegue" id="p2h-KE-VPW"/>
                     </connections>
@@ -177,6 +181,10 @@
             <point key="canvasLocation" x="1126" y="632"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="08-chat.png" width="24" height="22"/>
+        <image name="20-gear2.png" width="26" height="28"/>
+    </resources>
     <classes>
         <class className="IASKAppSettingsViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/IASKAppSettingsViewController.h"/>

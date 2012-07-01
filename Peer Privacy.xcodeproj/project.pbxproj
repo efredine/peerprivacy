@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -152,6 +152,8 @@
 		A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */; };
 		A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A19AE630158EBDB900B8DF3C /* Settings.bundle */; };
 		A19AE63B158EC71500B8DF3C /* SXMStreamCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */; };
+		A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A115A0FF5600B03B63 /* 08-chat.png */; };
+		A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A315A0FF6700B03B63 /* 20-gear2.png */; };
 		A1CC35A1159E111B00DD28CD /* SXMConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = A1CC35A0159E111B00DD28CD /* SXMConversation.m */; };
 		A1CC35A4159E111C00DD28CD /* SXMMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = A1CC35A3159E111C00DD28CD /* SXMMessage.m */; };
 		A1E47E5C1598E2B60013FE12 /* ChatBar.png in Resources */ = {isa = PBXBuildFile; fileRef = A1E47E571598E2B60013FE12 /* ChatBar.png */; };
@@ -453,6 +455,8 @@
 		A19AE630158EBDB900B8DF3C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A19AE639158EC71400B8DF3C /* SXMStreamCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMStreamCoordinator.h; sourceTree = "<group>"; };
 		A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMStreamCoordinator.m; sourceTree = "<group>"; };
+		A1BF82A115A0FF5600B03B63 /* 08-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat.png"; sourceTree = "<group>"; };
+		A1BF82A315A0FF6700B03B63 /* 20-gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear2.png"; sourceTree = "<group>"; };
 		A1CC359F159E111B00DD28CD /* SXMConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMConversation.h; sourceTree = "<group>"; };
 		A1CC35A0159E111B00DD28CD /* SXMConversation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMConversation.m; sourceTree = "<group>"; };
 		A1CC35A2159E111C00DD28CD /* SXMMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMMessage.h; sourceTree = "<group>"; };
@@ -604,6 +608,8 @@
 		A1279315158D1CB80014DC8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A1BF82A315A0FF6700B03B63 /* 20-gear2.png */,
+				A1BF82A115A0FF5600B03B63 /* 08-chat.png */,
 				A1E47E621598E2C20013FE12 /* SendButton.png */,
 				A1E47E571598E2B60013FE12 /* ChatBar.png */,
 				A1E47E581598E2B60013FE12 /* ChatBubbleGray.png */,
@@ -1274,7 +1280,7 @@
 				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = A12792C9158D19F20014DC8D /* Build configuration list for PBXProject "Peer Privacy" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1334,6 +1340,8 @@
 				A15F0BD0159EADFF00DBB796 /* IASKPSTextFieldSpecifierViewCell.xib in Resources */,
 				A15F0BD1159EADFF00DBB796 /* IASKPSToggleSwitchSpecifierViewCell.xib in Resources */,
 				A15F0BD2159EADFF00DBB796 /* IASKSpecifierValuesView.xib in Resources */,
+				A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */,
+				A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

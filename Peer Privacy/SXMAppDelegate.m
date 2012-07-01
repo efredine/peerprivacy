@@ -18,6 +18,7 @@
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
 
+
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
@@ -33,6 +34,8 @@ static const int ddLogLevel = LOG_LEVEL_VERBOSE;
 static const int ddLogLevel = LOG_LEVEL_INFO;
 #endif
 
+#define kConversationControllerIndex 0
+#define kTabBarControllerIndex 1
 
 @interface SXMAppDelegate()
 @end
@@ -45,6 +48,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
 
 @synthesize streamCoordinator;
+@synthesize tabBarController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -64,6 +68,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
 //    SXMConversationViewController *controller = (SXMConversationViewController *)navigationController.topViewController;
 //    controller.managedObjectContext = self.managedObjectContext;
+    
+    self.tabBarController = (UITabBarController *)self.window.rootViewController;
+    self.tabBarController.delegate = self;
+    
+    IASKAppSettingsViewController *settingsController = (IASKAppSettingsViewController *) [self.tabBarController.viewControllers objectAtIndex:kTabBarControllerIndex];
+    settingsController.delegate = self;
 
     // The XMPP streams
     self.streamCoordinator = [SXMStreamCoordinator sharedInstance];
@@ -234,6 +244,22 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforName:kFacebookStreamName];
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 
+}
+
+#pragma mark IASKSettingsDelegate
+
+- (void)settingsViewControllerDidEnd:(IASKAppSettingsViewController*)sender
+{
+    NSLog(@"Settings view ended.");
+}
+
+#pragma mark UITabBarControllerDelegate
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    if (viewController == [self.tabBarController.viewControllers objectAtIndex:kConversationControllerIndex]) {
+        [self.streamCoordinator configureStreams];
+    }
 }
 
 @end

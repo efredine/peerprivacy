@@ -22,6 +22,7 @@
 
 + (SXMStreamCoordinator *) sharedInstance;
 
+- (void) configureStreams;
 - (SXMStreamManager *) streamManagerforName: (NSString *)streamName;
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
 

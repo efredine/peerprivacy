@@ -104,7 +104,7 @@
     
     NSError *error = nil;
     NSArray *array = [moc executeFetchRequest:request error:&error];
-    if (array != nil)
+    if (array != nil && [array count] > 0)
     {
         user = [array objectAtIndex:0];
     }

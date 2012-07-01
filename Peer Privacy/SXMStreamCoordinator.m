@@ -24,22 +24,31 @@ static SXMStreamCoordinator *sharedInstance = nil;
     return sharedInstance;
 }
 
+#pragma mark initialization
+
 - (id)init {
     if (self = [super init]) {
         streamDictionary = [[NSMutableDictionary alloc] init];
         [self configureStreams];
-    }
+        [self initailizeNotifications];
+     }
     return (self);
 }
 
+#pragma configuration
+
 - (void) configureStreams {
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (nil == [streamDictionary valueForKey: kFacebookStreamName] ) {
         if ( [defaults boolForKey:kFaceBookEnabled] ) {
             SXMFacebookStreamManager *faceBookStreamManager = [[SXMFacebookStreamManager alloc] init];
             [faceBookStreamManager connect];
-            [streamDictionary setValue:faceBookStreamManager forKey:kFacebookStreamName];
+            [streamDictionary setObject:faceBookStreamManager forKey:kFacebookStreamName];
         }
+    }
+    else if (![defaults boolForKey:kFaceBookEnabled]){
+        [streamDictionary removeObjectForKey:kFacebookStreamName];
     }
     
     if (nil == [streamDictionary valueForKey: kGoogleStreamName] ) {
@@ -48,10 +57,16 @@ static SXMStreamCoordinator *sharedInstance = nil;
             NSString *thePassword = [defaults stringForKey:kGmailPassword];
             SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
             [googleStreamManager connect];
-            [streamDictionary setValue:googleStreamManager forKey:kGoogleStreamName];
+            [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
         }
     }
+    else if (![defaults boolForKey:kGoogleEnabled]){
+        [streamDictionary removeObjectForKey:kGoogleStreamName];
+    }
+
 }
+
+#pragma mark Retrieve streams
 
 - (SXMStreamManager *) streamManagerforName: (NSString *)streamName
 {
@@ -67,5 +82,27 @@ static SXMStreamCoordinator *sharedInstance = nil;
     }
     return nil;
 }
+
+#pragma mark Foreground Notifications
+
+- (void)initailizeNotifications
+{
+    UIApplication *app = [UIApplication sharedApplication];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:app];
+}
+
+- (void)applicationWillEnterForeground:(NSNotification *)notification 
+{
+    [self configureStreams];
+}
+
+- (void) dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 @end
