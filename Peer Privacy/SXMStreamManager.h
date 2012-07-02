@@ -25,6 +25,8 @@
 @property (nonatomic) BOOL allowSSLHostNameMismatch;
 @property (nonatomic) BOOL isXmppConnected;
 
+@property (nonatomic, copy) NSString *name;
+
 - (XMPPStream *)allocateStream;
 - (void)configureStream;
 - (void)teardownStream;

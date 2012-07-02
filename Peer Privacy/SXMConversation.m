@@ -10,6 +10,7 @@
 #import "SXMMessage.h"
 #import "XMPPMessage.h"
 #import "XMPPRosterCoreDataStorage.h"
+#import "SXMStreamCoordinator.h"
 
 
 @implementation SXMConversation
@@ -109,6 +110,12 @@
         user = [array objectAtIndex:0];
     }
     return user;
+}
+
+- (SXMStreamManager *) streamManager
+{
+    SXMStreamCoordinator *streamCoordinator = [SXMStreamCoordinator sharedInstance];
+    return [streamCoordinator streamManagerforStreamBareJidStr:self.streamBareJidStr];
 }
 
 @end

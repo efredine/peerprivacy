@@ -80,7 +80,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Conversation"];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -134,6 +134,11 @@
     {
         [(SXMNewMessageController *)[[segue destinationViewController] topViewController] setDelegate:self];
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self setEditing:NO animated:NO];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -261,6 +266,7 @@
     }
     else {
         cell.textLabel.text = user.displayName;
+        cell.detailTextLabel.text = conversation.streamManager.name;
         [self configurePhotoForCell:cell user:user];
     }
 }

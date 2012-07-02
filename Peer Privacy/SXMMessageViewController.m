@@ -462,8 +462,8 @@ static NSString *kMessageCell = @"MessageCell";
     if (previousContentHeight > 22.0f) {
         RESET_CHAT_BAR_HEIGHT;
         chatInput.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
-//        chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
-//        [self scrollToBottomAnimated:YES];
+        chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
+        [self scrollToBottomAnimated:YES];
     }
 }
 

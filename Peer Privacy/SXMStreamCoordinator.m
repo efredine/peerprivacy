@@ -45,6 +45,7 @@ static SXMStreamCoordinator *sharedInstance = nil;
             SXMFacebookStreamManager *faceBookStreamManager = [[SXMFacebookStreamManager alloc] init];
             [faceBookStreamManager connect];
             [streamDictionary setObject:faceBookStreamManager forKey:kFacebookStreamName];
+            faceBookStreamManager.name = @"Facebook";
         }
     }
     else if (![defaults boolForKey:kFaceBookEnabled]){
@@ -58,6 +59,7 @@ static SXMStreamCoordinator *sharedInstance = nil;
             SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
             [googleStreamManager connect];
             [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
+            googleStreamManager.name = @"Google";
         }
     }
     else if (![defaults boolForKey:kGoogleEnabled]){

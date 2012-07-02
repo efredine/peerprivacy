@@ -53,6 +53,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize allowSSLHostNameMismatch;
 @synthesize isXmppConnected;
 
+@synthesize name;
+
 - (SXMAppDelegate *)appDelegate
 {
 	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
