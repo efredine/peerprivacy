@@ -67,6 +67,7 @@
 
 + (SXMConversation *)insertNewConversationForUser: (XMPPUserCoreDataStorageObject *)user inManagedObjectContext: (NSManagedObjectContext *) context
 {
+    
     return [SXMConversation insertNewConversationForJidStr:user.jidStr andStreamBareJidStr:user.streamBareJidStr inManagedObjectContext:context];
 }
 

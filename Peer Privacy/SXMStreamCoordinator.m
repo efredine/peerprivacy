@@ -77,7 +77,9 @@ static SXMStreamCoordinator *sharedInstance = nil;
 
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr
 {
+    NSLog(@"streamManager for %@", streamBareJidStr);
     for (SXMStreamManager *aStreamManager in [self.streamDictionary allValues] ) {
+        NSLog(@"Testing %@", aStreamManager.xmppStream.myJID.bare);
         if ([aStreamManager.xmppStream.myJID.bare isEqualToString:streamBareJidStr]) {
             return aStreamManager;
         }

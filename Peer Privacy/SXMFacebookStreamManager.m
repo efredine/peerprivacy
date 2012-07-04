@@ -44,14 +44,28 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults objectForKey:@"FBAccessTokenKey"] 
         && [defaults objectForKey:@"FBExpirationDateKey"]) {
+        DDLogVerbose(@"Using existing FB token");
         facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
         facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
     }
     
     if (![facebook isSessionValid]) {
+        // TODO extend access token
+        DDLogVerbose(@"FB session is invalid - re-authorizing");        
         [facebook authorize:[NSArray arrayWithObject:@"xmpp_login"]];    
     }    
+    else 
+    {
+        DDLogVerbose(@"Facebook session is valid - open xmpp session");
+        NSError *error = nil;
+        if (![self.xmppStream connect:&error])
+        {
+            DDLogError(@"%@: Error in xmpp connection: %@", THIS_FILE, error);
+        }
+        DDLogVerbose(@"myJID = %@", [self.xmppStream.myJID full]);
+    }
     
+    NSLog(@"Returning from connect request");
     return YES;
     
 }
@@ -84,7 +98,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         {
             DDLogError(@"%@: Error in xmpp auth: %@", THIS_FILE, error);
         }
-    }    
+    } 
+    DDLogVerbose(@"Did connect myJID = %@", [self.xmppStream.myJID full]);
+
     
 }
 
@@ -109,6 +125,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	{
 		DDLogError(@"%@: Error in xmpp connection: %@", THIS_FILE, error);
 	}
+    DDLogVerbose(@"did login myJID = %@", [self.xmppStream.myJID full]);
 }
 
 - (void)fbDidNotLogin:(BOOL)cancelled

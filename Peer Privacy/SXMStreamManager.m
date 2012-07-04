@@ -302,7 +302,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     [body setStringValue:messageStr];
     
     NSXMLElement *message = [NSXMLElement elementWithName:@"message"];
-    [message addAttributeWithName:@"type" stringValue:@"chat"];
+    [message addAttributeWithName:@"type" stringValue:@"normal"];
     [message addAttributeWithName:@"to" stringValue:jidStr];
     [message addChild:body];
     
