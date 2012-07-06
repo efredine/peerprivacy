@@ -8,14 +8,14 @@
 
 #import "SXMAccountDetailViewController.h"
 
-@class SXMNewJabberAccountController;
+@class SXMEditJabberAccountController;
 
 @protocol SXMNewJabbberAccountControllerDelegate <NSObject>
-- (void) SXMNewJabbberAccountController:(SXMNewJabberAccountController *)sender withAccount: (SXMAccount *)account;
-- (void) SXMNewJabbberAccountControllerCancelled:(SXMNewJabberAccountController *)sender;
+- (void) SXMNewJabbberAccountController:(SXMEditJabberAccountController *)sender withAccount: (SXMAccount *)account;
+- (void) SXMNewJabbberAccountControllerCancelled:(SXMEditJabberAccountController *)sender;
 @end
 
-@interface SXMNewJabberAccountController : SXMAccountDetailViewController <UITextFieldDelegate>
+@interface SXMEditJabberAccountController : SXMAccountDetailViewController <UITextFieldDelegate>
 
 @property (strong, nonatomic) id<SXMNewJabbberAccountControllerDelegate> delegate;
 
@@ -24,7 +24,7 @@
 @property (strong, nonatomic) IBOutlet UISwitch *enabled;
 @property (strong, nonatomic) IBOutlet UISwitch *rememberPassword;
 
-- (IBAction)logIn:(id)sender;
+- (IBAction)logButton:(id)sender;
 - (IBAction)backgroundTouched:(id)sender;
 
 @end

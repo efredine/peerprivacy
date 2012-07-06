@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SXMNewJabberAccountController.h"
+#import "SXMEditJabberAccountController.h"
 #import "SXMStreamCoordinator.h"
 
-@implementation SXMNewJabberAccountController
+@implementation SXMEditJabberAccountController
 
 @synthesize delegate;
 @synthesize userId, password;
@@ -56,8 +56,6 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-#pragma mark new account delegate
-
 
 #pragma mark Logging In
 
@@ -84,7 +82,7 @@
     [self.delegate SXMNewJabbberAccountControllerCancelled:self];
 }
 
--(IBAction)logIn:(id)sender
+-(IBAction)logButton:(id)sender
 {
     [self doLogIn];
 }
@@ -103,7 +101,5 @@
     [self.userId resignFirstResponder];
     [self.password becomeFirstResponder];
 }
-
-
 
 @end

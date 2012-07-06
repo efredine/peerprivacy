@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "SXMNewJabberAccountController.h"
+#import "SXMEditJabberAccountController.h"
 
 @interface SXMAccountViewController : UITableViewController <NSFetchedResultsControllerDelegate, SXMNewJabbberAccountControllerDelegate>
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;

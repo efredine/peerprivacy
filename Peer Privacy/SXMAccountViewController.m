@@ -104,30 +104,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *cellIdentifier = nil;
     
     SXMAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    UITableViewCell *cell = nil;
+    
     if (account.configured) {
-        if (account.accountType == kFacebookAccountType) {
-            cellIdentifier = @"FacebookViewDetails";
-        }
-        else {
-            cellIdentifier = @"JabberViewDetails";
-        }
-    }
+        cell = [tableView dequeueReusableCellWithIdentifier:@"ViewAccountDetails"];
+        cell.textLabel.text = account.userId;
+        cell.detailTextLabel.text = account.name;
+      }
     else {
         if (account.accountType == kFacebookAccountType) {
-            cellIdentifier = @"ConfigureFacebook";
+            cell = [tableView dequeueReusableCellWithIdentifier: @"ConfigureFacebook"];
         }
         else {
-            cellIdentifier = @"ConfigureJabber";
+            cell = [tableView dequeueReusableCellWithIdentifier: @"ConfigureJabber"];
         }
+        cell.textLabel.text = account.name;
     }
-    
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    
-    cell.textLabel.text = account.name;
-    
+
     return cell;
 }
 
@@ -154,8 +149,8 @@
     if ([[segue identifier] isEqualToString:@"newJabberAccount"])
     {
         NSLog(@"Setting account");
-        [(SXMNewJabberAccountController *)[[segue destinationViewController] topViewController] setDelegate:self];
-        [(SXMNewJabberAccountController *)[[segue destinationViewController] topViewController] setAccount:self.selectedAccount];
+        [(SXMEditJabberAccountController *)[[segue destinationViewController] topViewController] setDelegate:self];
+        [(SXMEditJabberAccountController *)[[segue destinationViewController] topViewController] setAccount:self.selectedAccount];
     }
     else {
         [(SXMAccountDetailViewController *)[segue destinationViewController] setAccount:self.selectedAccount];
@@ -265,7 +260,7 @@
     [self dismissViewControllerAnimated:YES completion: nil];
 }
 
-- (void)SXMNewJabbberAccountController:(SXMNewJabberAccountController *)sender withAccount:(SXMAccount *)account
+- (void)SXMNewJabbberAccountController:(SXMEditJabberAccountController *)sender withAccount:(SXMAccount *)account
 {
     [self dismissViewControllerAnimated:YES completion: nil];
     [self.tableView reloadData];

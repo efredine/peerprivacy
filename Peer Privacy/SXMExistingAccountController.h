@@ -8,13 +8,12 @@
 
 #import "SXMAccountDetailViewController.h"
 
-@interface SXMViewJabberAccountController : SXMAccountDetailViewController
+@interface SXMExistingAccountController : SXMAccountDetailViewController
 @property (strong, nonatomic) IBOutlet UILabel *userId;
-@property (strong, nonatomic) IBOutlet UITextField *password;
 @property (strong, nonatomic) IBOutlet UISwitch *enabled;
 @property (strong, nonatomic) IBOutlet UISwitch *rememberPassword;
 
-- (IBAction)logOut:(id)sender;
+- (IBAction)logButton:(id)sender;
 - (IBAction)deleteButton:(id)sender;
 
 @end

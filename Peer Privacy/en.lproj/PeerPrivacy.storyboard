@@ -109,46 +109,32 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="JabberViewDetails" textLabel="ehT-TB-K5h" style="IBUITableViewCellStyleDefault" id="8U3-HR-e2n">
-                                <rect key="frame" x="0.0" y="135" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ViewAccountDetails" textLabel="ehT-TB-K5h" detailTextLabel="rMV-YW-wjK" style="IBUITableViewCellStyleSubtitle" id="8U3-HR-e2n">
+                                <rect key="frame" x="0.0" y="135" width="320" height="45"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Google" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ehT-TB-K5h">
-                                            <rect key="frame" x="10" y="0.0" width="260" height="43"/>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Account Id" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ehT-TB-K5h">
+                                            <rect key="frame" x="10" y="2" width="93" height="22"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </label>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Account type" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rMV-YW-wjK">
+                                            <rect key="frame" x="10" y="24" width="81" height="18"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" red="0.50196078431372548" green="0.50196078431372548" blue="0.50196078431372548" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         </label>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <connections>
-                                    <segue destination="KbR-Nu-bjT" kind="push" identifier="viewJabberAccount" id="998-0G-vAh"/>
-                                </connections>
-                            </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FacebookViewDetails" textLabel="McD-TI-Egt" style="IBUITableViewCellStyleDefault" id="rzc-pE-Ay5">
-                                <rect key="frame" x="0.0" y="179" width="320" height="45"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="10" y="0.0" width="280" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Facebook" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="McD-TI-Egt">
-                                            <rect key="frame" x="10" y="0.0" width="260" height="43"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                            <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        </label>
-                                    </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                </view>
-                                <connections>
-                                    <segue destination="pm5-ZG-KvT" kind="push" identifier="viewFacebookAccount" id="PxY-hU-pwa"/>
+                                    <segue destination="KbR-Nu-bjT" kind="push" identifier="viewAccount" id="998-0G-vAh"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -163,11 +149,11 @@
             </objects>
             <point key="canvasLocation" x="746" y="1540"/>
         </scene>
-        <!--New Jabber Account Controller - Google-->
+        <!--Edit Jabber Account Controller - Google-->
         <scene sceneID="Cn9-m9-c1H">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Eqq-no-lzJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController title="Google" id="xRY-bi-qHb" customClass="SXMNewJabberAccountController" sceneMemberID="viewController">
+                <viewController title="Google" id="xRY-bi-qHb" customClass="SXMEditJabberAccountController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="mGD-78-QdJ" customClass="UIControl">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -231,7 +217,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="logIn:" destination="xRY-bi-qHb" eventType="touchUpInside" id="rwy-gr-gVw"/>
+                                    <action selector="logButton:" destination="xRY-bi-qHb" eventType="touchUpInside" id="ZC5-Ww-K6C"/>
                                 </connections>
                             </button>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="4xj-PM-yh2">
@@ -274,24 +260,17 @@
             </objects>
             <point key="canvasLocation" x="1211" y="1286"/>
         </scene>
-        <!--View Jabber Account Controller - Google-->
+        <!--Existing Account Controller - Account Id-->
         <scene sceneID="y5e-ej-gfa">
             <objects>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FuP-tw-Hq7" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="KbR-Nu-bjT" customClass="SXMViewJabberAccountController" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="KbR-Nu-bjT" customClass="SXMExistingAccountController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="KQ5-9L-Hlk">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Account id" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="toC-xq-0Yr">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Account Type" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="toC-xq-0Yr">
                                 <rect key="frame" x="20" y="26" width="280" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Password:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="iYe-Uv-Xtv">
-                                <rect key="frame" x="20" y="91" width="81" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -311,12 +290,6 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="bWI-7q-cAc">
-                                <rect key="frame" x="109" y="86" width="191" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="go" enablesReturnKeyAutomatically="YES"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="oO0-fh-84Z">
                                 <rect key="frame" x="20" y="125" width="280" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -329,7 +302,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="logOut:" destination="KbR-Nu-bjT" eventType="touchUpInside" id="prd-ao-Ypx"/>
+                                    <action selector="logButton:" destination="KbR-Nu-bjT" eventType="touchUpInside" id="Pv6-GM-W8C"/>
                                 </connections>
                             </button>
                             <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="R0F-Ju-SH9">
@@ -354,58 +327,11 @@
                                     <action selector="deleteButton:" destination="KbR-Nu-bjT" eventType="touchUpInside" id="Ofz-wr-gyB"/>
                                 </connections>
                             </button>
-                        </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Google" id="P5f-nh-46U">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="rMv-v0-5WZ"/>
-                    </navigationItem>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <connections>
-                        <outlet property="enabled" destination="lq5-Ar-c70" id="8g0-6Z-dsX"/>
-                        <outlet property="password" destination="bWI-7q-cAc" id="Oey-BD-ky5"/>
-                        <outlet property="rememberPassword" destination="R0F-Ju-SH9" id="X24-qi-ukW"/>
-                        <outlet property="userId" destination="toC-xq-0Yr" id="2ZY-D3-mfQ"/>
-                    </connections>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="1223" y="1861"/>
-        </scene>
-        <!--View Facebook Account Controller - Facebook-->
-        <scene sceneID="9IF-TO-dqS">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="P9P-PX-Tp7" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="pm5-ZG-KvT" customClass="SXMViewFacebookAccountController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="LhB-bj-znT">
-                        <rect key="frame" x="0.0" y="64" width="320" height="416"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Account id" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="sb8-1C-dOL">
-                                <rect key="frame" x="27" y="35" width="280" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Enabled:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="Dpg-Ny-j0B">
-                                <rect key="frame" x="27" y="161" width="81" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Remember password:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="t5s-P0-WJd">
-                                <rect key="frame" x="27" y="196" width="168" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Nyr-rW-0VH">
-                                <rect key="frame" x="27" y="89" width="280" height="37"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="NQC-zJ-2BM">
+                                <rect key="frame" x="20" y="74" width="280" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Log Out">
+                                <state key="normal" title="Edit Account">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -413,44 +339,24 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="logOut:" destination="pm5-ZG-KvT" eventType="touchUpInside" id="I3x-k1-4SQ"/>
-                                </connections>
-                            </button>
-                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="IYl-FO-4jn">
-                                <rect key="frame" x="228" y="193" width="79" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </switch>
-                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="yIs-Kx-TqY">
-                                <rect key="frame" x="228" y="158" width="79" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </switch>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="4Xw-0J-iO2">
-                                <rect key="frame" x="27" y="310" width="280" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Delete">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="deleteButton:" destination="pm5-ZG-KvT" eventType="touchUpInside" id="YeP-fD-h8b"/>
+                                    <action selector="logButton:" destination="KbR-Nu-bjT" eventType="touchUpInside" id="KxB-PU-Br4"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Facebook" id="glV-ON-0cA"/>
+                    <navigationItem key="navigationItem" title="Account Id" id="P5f-nh-46U">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="rMv-v0-5WZ"/>
+                    </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="enabled" destination="yIs-Kx-TqY" id="qDZ-c0-aH6"/>
-                        <outlet property="rememberPassword" destination="IYl-FO-4jn" id="mEp-J7-cV9"/>
-                        <outlet property="userId" destination="sb8-1C-dOL" id="434-G7-1jW"/>
+                        <outlet property="enabled" destination="lq5-Ar-c70" id="8g0-6Z-dsX"/>
+                        <outlet property="rememberPassword" destination="R0F-Ju-SH9" id="X24-qi-ukW"/>
+                        <outlet property="userId" destination="toC-xq-0Yr" id="2ZY-D3-mfQ"/>
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="1223" y="2453"/>
+            <point key="canvasLocation" x="1223" y="1861"/>
         </scene>
         <!--Navigation Controller - Settings-->
         <scene sceneID="dhj-Zv-rMi">
@@ -601,24 +507,19 @@
         <class className="SXMConversationViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMConversationViewController.h"/>
         </class>
-        <class className="SXMMessageViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMMessageViewController.h"/>
-        </class>
-        <class className="SXMNewMessageController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMNewMessageController.h"/>
-        </class>
-        <class className="SXMViewFacebookAccountController" superclassName="SXMAccountDetailViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMViewFacebookAccountController.h"/>
+        <class className="SXMEditJabberAccountController" superclassName="SXMAccountDetailViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMEditJabberAccountController.h"/>
             <relationships>
-                <relationship kind="action" name="deleteButton:"/>
-                <relationship kind="action" name="logOut:"/>
+                <relationship kind="action" name="backgroundTouched:"/>
+                <relationship kind="action" name="logIn:"/>
                 <relationship kind="outlet" name="enabled" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="password" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="rememberPassword" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="userId" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="userId" candidateClass="UITextField"/>
             </relationships>
         </class>
-        <class className="SXMViewJabberAccountController" superclassName="SXMAccountDetailViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMViewJabberAccountController.h"/>
+        <class className="SXMExistingAccountController" superclassName="SXMAccountDetailViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMExistingAccountController.h"/>
             <relationships>
                 <relationship kind="action" name="deleteButton:"/>
                 <relationship kind="action" name="logOut:"/>
@@ -627,6 +528,12 @@
                 <relationship kind="outlet" name="rememberPassword" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="userId" candidateClass="UILabel"/>
             </relationships>
+        </class>
+        <class className="SXMMessageViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMMessageViewController.h"/>
+        </class>
+        <class className="SXMNewMessageController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMNewMessageController.h"/>
         </class>
     </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
