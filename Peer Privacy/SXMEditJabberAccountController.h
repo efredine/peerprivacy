@@ -23,6 +23,10 @@
 @property (strong, nonatomic) IBOutlet UITextField *password;
 @property (strong, nonatomic) IBOutlet UISwitch *enabled;
 @property (strong, nonatomic) IBOutlet UISwitch *rememberPassword;
+@property (strong, nonatomic) IBOutlet UIButton *logInOut;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *connectActivity;
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *cancelButton;
+
 
 - (IBAction)logButton:(id)sender;
 - (IBAction)backgroundTouched:(id)sender;

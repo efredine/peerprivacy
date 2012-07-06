@@ -14,6 +14,9 @@
 @synthesize delegate;
 @synthesize userId, password;
 @synthesize enabled, rememberPassword;
+@synthesize logInOut;
+@synthesize connectActivity;
+@synthesize cancelButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,8 +33,8 @@
 	// Do any additional setup after loading the view.
     // Cancel button to dismiss this view
     
-    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelected:)];
-    self.navigationItem.leftBarButtonItem = cancelButton;
+    self.cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelSelected:)];
+    self.navigationItem.leftBarButtonItem = self.cancelButton;
     
     [self.password setDelegate:self];
     [self.password addTarget:self
@@ -49,6 +52,15 @@
 {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
+    
+    self.delegate = nil;
+    self.userId = nil;
+    self.password = nil;
+    self.enabled = nil;
+    self.rememberPassword = nil;
+    self.logInOut = nil;
+    self.connectActivity = nil;
+    self.cancelButton = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -68,11 +80,24 @@
     
     SXMStreamCoordinator *streamCoordinator = [SXMStreamCoordinator sharedInstance];
     SXMStreamManager *stream = [streamCoordinator allocateStreamManagerforAccount:self.account];
-    [stream connect];
-  
-    self.account.configured = YES;
     
-    [self.delegate SXMNewJabbberAccountController:self withAccount:self.account];
+    [self.connectActivity startAnimating];
+    self.logInOut.enabled = NO;
+    self.cancelButton.enabled = NO;
+    [stream connectWithCompletion:^(BOOL connected) {
+        [self.connectActivity stopAnimating];
+        if (connected) {
+            self.account.configured = YES;
+            [self.delegate SXMNewJabbberAccountController:self withAccount:self.account];
+        }
+        else {
+            // display an alert telling the user to try again!
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection failed" message:@"Check your user id and password and try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert  show];
+            self.logInOut.enabled = YES;
+            self.cancelButton.enabled = YES;
+        }
+    }];
 }
 
 #pragma UI Actions

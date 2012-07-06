@@ -54,6 +54,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize isXmppConnected;
 
 @synthesize account;
+@synthesize connectCompletion;
 
 - (SXMAppDelegate *)appDelegate
 {
@@ -288,6 +289,20 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	return NO;
 }
 
+- (BOOL)connectWithCompletion:(void (^)(BOOL))completion
+{
+    self.connectCompletion = completion;
+    return [self connect];
+}
+
+- (void)fireCompletion: (BOOL)didConnect
+{
+    if (self.connectCompletion) {
+        self.connectCompletion( didConnect );
+        self.connectCompletion = nil;
+    }
+}
+
 - (void)disconnect
 {
 	[self goOffline];
@@ -329,13 +344,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)xmppStreamDidAuthenticate:(XMPPStream *)sender
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
-	
+    
+    [self fireCompletion:YES];	
 	[self goOnline];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didNotAuthenticate:(NSXMLElement *)error
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    [self fireCompletion:NO];	
 }
 
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq
@@ -421,6 +438,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	
 	if (!isXmppConnected)
 	{
+        [self fireCompletion:NO];	
 		DDLogError(@"Unable to connect to server. Check xmppStream.hostName");
 	}
 }

@@ -28,6 +28,7 @@
 @property (nonatomic) BOOL isXmppConnected;
 
 @property (nonatomic, strong) SXMAccount *account;
+@property (nonatomic, strong) void (^connectCompletion)(BOOL connected);
 
 - (XMPPStream *)allocateStream;
 - (void)configureStream;
@@ -38,6 +39,7 @@
 
 - (BOOL)connect;
 - (void)disconnect;
+- (BOOL)connectWithCompletion: (void (^)(BOOL connected))completion; 
 
 - (void) sendMessageWithBody: (NSString *)messageStr andJidStr: (NSString *)jidStr;
 

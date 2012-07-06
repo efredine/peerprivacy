@@ -228,6 +228,11 @@
                                 <rect key="frame" x="221" y="292" width="79" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </switch>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="gray" id="hYe-p6-FQO">
+                                <rect key="frame" x="222" y="216" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <connections>
@@ -236,7 +241,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Google" id="EqI-Ne-IxW"/>
                     <connections>
+                        <outlet property="connectActivity" destination="hYe-p6-FQO" id="sq5-dO-yJi"/>
                         <outlet property="enabled" destination="Y7F-Si-tVB" id="byp-RI-iAV"/>
+                        <outlet property="logInOut" destination="5Pm-4r-Lij" id="C3K-Zh-eYz"/>
                         <outlet property="password" destination="Hc7-KD-k2R" id="wSg-mN-q44"/>
                         <outlet property="rememberPassword" destination="4xj-PM-yh2" id="N0C-cJ-NTR"/>
                         <outlet property="userId" destination="ne8-ea-HAq" id="R2A-On-jLh"/>
@@ -511,8 +518,10 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMEditJabberAccountController.h"/>
             <relationships>
                 <relationship kind="action" name="backgroundTouched:"/>
-                <relationship kind="action" name="logIn:"/>
+                <relationship kind="action" name="logButton:"/>
+                <relationship kind="outlet" name="connectActivity" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="enabled" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="logInOut" candidateClass="UIButton"/>
                 <relationship kind="outlet" name="password" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="rememberPassword" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="userId" candidateClass="UITextField"/>
@@ -522,9 +531,8 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/SXMExistingAccountController.h"/>
             <relationships>
                 <relationship kind="action" name="deleteButton:"/>
-                <relationship kind="action" name="logOut:"/>
+                <relationship kind="action" name="logButton:"/>
                 <relationship kind="outlet" name="enabled" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="password" candidateClass="UITextField"/>
                 <relationship kind="outlet" name="rememberPassword" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="userId" candidateClass="UILabel"/>
             </relationships>
