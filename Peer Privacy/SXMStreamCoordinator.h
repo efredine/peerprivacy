@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "SXMStreamManager.h"
+#import "SXMAccount.h"
 
 #define kFaceBookEnabled @"faceBookEnabled"
 #define kGoogleEnabled @"gmailEnabled"
@@ -23,6 +24,7 @@
 + (SXMStreamCoordinator *) sharedInstance;
 
 - (void) configureStreams;
+- (SXMStreamManager *) allocateStreamManagerforAccount: (SXMAccount *)account;
 - (SXMStreamManager *) streamManagerforName: (NSString *)streamName;
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
 

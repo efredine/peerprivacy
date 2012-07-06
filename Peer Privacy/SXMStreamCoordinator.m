@@ -39,33 +39,51 @@ static SXMStreamCoordinator *sharedInstance = nil;
 
 - (void) configureStreams {
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if (nil == [streamDictionary valueForKey: kFacebookStreamName] ) {
-        if ( [defaults boolForKey:kFaceBookEnabled] ) {
-            SXMFacebookStreamManager *faceBookStreamManager = [[SXMFacebookStreamManager alloc] init];
-            [faceBookStreamManager connect];
-            [streamDictionary setObject:faceBookStreamManager forKey:kFacebookStreamName];
-            faceBookStreamManager.name = @"Facebook";
-        }
-    }
-    else if (![defaults boolForKey:kFaceBookEnabled]){
-        [streamDictionary removeObjectForKey:kFacebookStreamName];
-    }
-    
-    if (nil == [streamDictionary valueForKey: kGoogleStreamName] ) {
-        if ( [defaults boolForKey:kGoogleEnabled] ) {
-            NSString *theJID = [defaults stringForKey:kGmailAddress];
-            NSString *thePassword = [defaults stringForKey:kGmailPassword];
-            SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
-            [googleStreamManager connect];
-            [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
-            googleStreamManager.name = @"Google";
-        }
-    }
-    else if (![defaults boolForKey:kGoogleEnabled]){
-        [streamDictionary removeObjectForKey:kGoogleStreamName];
-    }
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    if (nil == [streamDictionary valueForKey: kFacebookStreamName] ) {
+//        
+//    }
+//    else if (![defaults boolForKey:kFaceBookEnabled]){
+//        [streamDictionary removeObjectForKey:kFacebookStreamName];
+//    }
+//    
+//    if (nil == [streamDictionary valueForKey: kGoogleStreamName] ) {
+//        if ( [defaults boolForKey:kGoogleEnabled] ) {
+//            NSString *theJID = [defaults stringForKey:kGmailAddress];
+//            NSString *thePassword = [defaults stringForKey:kGmailPassword];
+//            SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
+//            [googleStreamManager connect];
+//            [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
+//            googleStreamManager.name = @"Google";
+//        }
+//    }
+//    else if (![defaults boolForKey:kGoogleEnabled]){
+//        [streamDictionary removeObjectForKey:kGoogleStreamName];
+//    }
 
+}
+
+#pragma mark Allocate a stream
+
+- (SXMStreamManager *)allocateStreamManagerforAccount: (SXMAccount *)account
+{
+    if (account.accountType == kFacebookAccountType) 
+    {
+        SXMFacebookStreamManager *faceBookStreamManager = [[SXMFacebookStreamManager alloc] init];
+        [streamDictionary setObject:faceBookStreamManager forKey:kFacebookStreamName];
+        faceBookStreamManager.account = account;
+        return faceBookStreamManager;
+    }
+    else if (account.accountType == kGoogleAccountType)
+    {
+        NSString *theJID = account.userId;
+        NSString *thePassword = account.password;
+        SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
+        [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
+        googleStreamManager.account = account;
+        return googleStreamManager;
+    }
+    return nil;
 }
 
 #pragma mark Retrieve streams

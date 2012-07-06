@@ -18,14 +18,14 @@
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
 
-
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 
 #import <CFNetwork/CFNetwork.h>
 
+#import "SXMAccount.h"
+#import "SXMStreamManager.h"
 #import "SXMFacebookStreamManager.h"
-#import "SXMJabberStreamManager.h"
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
@@ -50,6 +50,28 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize streamCoordinator;
 @synthesize tabBarController;
 
+- (void)bootStrap
+{
+    NSURL *plistURL = [[NSBundle mainBundle] URLForResource:@"accountdefaults"
+                                              withExtension:@"plist"];
+    
+    NSDictionary *dict = [[NSDictionary alloc] initWithContentsOfURL:plistURL];
+    NSArray *accountDefaults = [dict objectForKey:@"Accounts"];
+    
+    for (NSDictionary *item in accountDefaults) {
+        SXMAccount *account = [NSEntityDescription 
+                               insertNewObjectForEntityForName:@"SXMAccount" 
+                               inManagedObjectContext:self.managedObjectContext];
+        account.accountType = [[item objectForKey:@"accountType"] integerValue];
+        account.configured = NO;
+        account.enabled = YES;
+        account.name = [item objectForKey:@"name"];
+        account.rememberPassword = YES;
+    }
+    
+    [self saveContext];
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     
@@ -63,6 +85,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #endif
     
     DDLogVerbose(@"Test DDLogVerbose!");
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults objectForKey:@"bootStrap"]) {
+        [self bootStrap];
+        [defaults setObject:[NSNumber numberWithBool:YES] forKey:@"bootStrap"];
+        [defaults synchronize];
+    }
     
     // Override point for customization after application launch.
 //    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;

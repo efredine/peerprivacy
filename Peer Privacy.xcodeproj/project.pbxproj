@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A10539C715A5F35600275717 /* SXMAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539C615A5F35500275717 /* SXMAccount.m */; };
+		A10539C915A60F2500275717 /* accountdefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = A10539C815A60F2500275717 /* accountdefaults.plist */; };
+		A10539CC15A622FC00275717 /* SXMAccountDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539CB15A622FC00275717 /* SXMAccountDetailViewController.m */; };
+		A10539CF15A62AE800275717 /* SXMNewJabberAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539CE15A62AE800275717 /* SXMNewJabberAccountController.m */; };
+		A10539D215A62C6B00275717 /* SXMViewJabberAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539D115A62C6B00275717 /* SXMViewJabberAccountController.m */; };
+		A10539D515A62E1800275717 /* SXMViewFacebookAccountController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539D415A62E1700275717 /* SXMViewFacebookAccountController.m */; };
+		A10539D815A62F8300275717 /* SXMAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10539D715A62F8200275717 /* SXMAccountViewController.m */; };
 		A113CADF159529C600807CF1 /* SXMNewMessageController.m in Sources */ = {isa = PBXBuildFile; fileRef = A113CADE159529C600807CF1 /* SXMNewMessageController.m */; };
 		A113CAE215967EB700807CF1 /* defaultPerson.png in Resources */ = {isa = PBXBuildFile; fileRef = A113CAE115967EB700807CF1 /* defaultPerson.png */; };
 		A12792D4158D19F20014DC8D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A12792D3158D19F20014DC8D /* UIKit.framework */; };
@@ -182,6 +189,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A10539C515A5F35500275717 /* SXMAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMAccount.h; sourceTree = "<group>"; };
+		A10539C615A5F35500275717 /* SXMAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMAccount.m; sourceTree = "<group>"; };
+		A10539C815A60F2500275717 /* accountdefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = accountdefaults.plist; sourceTree = "<group>"; };
+		A10539CA15A622FB00275717 /* SXMAccountDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMAccountDetailViewController.h; sourceTree = "<group>"; };
+		A10539CB15A622FC00275717 /* SXMAccountDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMAccountDetailViewController.m; sourceTree = "<group>"; };
+		A10539CD15A62AE700275717 /* SXMNewJabberAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMNewJabberAccountController.h; sourceTree = "<group>"; };
+		A10539CE15A62AE800275717 /* SXMNewJabberAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMNewJabberAccountController.m; sourceTree = "<group>"; };
+		A10539D015A62C6B00275717 /* SXMViewJabberAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMViewJabberAccountController.h; sourceTree = "<group>"; };
+		A10539D115A62C6B00275717 /* SXMViewJabberAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMViewJabberAccountController.m; sourceTree = "<group>"; };
+		A10539D315A62E1700275717 /* SXMViewFacebookAccountController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMViewFacebookAccountController.h; sourceTree = "<group>"; };
+		A10539D415A62E1700275717 /* SXMViewFacebookAccountController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMViewFacebookAccountController.m; sourceTree = "<group>"; };
+		A10539D615A62F8200275717 /* SXMAccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMAccountViewController.h; sourceTree = "<group>"; };
+		A10539D715A62F8200275717 /* SXMAccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMAccountViewController.m; sourceTree = "<group>"; };
 		A113CADD159529C500807CF1 /* SXMNewMessageController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMNewMessageController.h; sourceTree = "<group>"; };
 		A113CADE159529C600807CF1 /* SXMNewMessageController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMNewMessageController.m; sourceTree = "<group>"; };
 		A113CAE115967EB700807CF1 /* defaultPerson.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultPerson.png; sourceTree = "<group>"; };
@@ -557,6 +577,8 @@
 				A19AE625158E681400B8DF3C /* SXMStreamManager.h */,
 				A19AE626158E681400B8DF3C /* SXMStreamManager.m */,
 				A12792E7158D19F20014DC8D /* PeerPrivacy.storyboard */,
+				A10539D315A62E1700275717 /* SXMViewFacebookAccountController.h */,
+				A10539D415A62E1700275717 /* SXMViewFacebookAccountController.m */,
 				A12792ED158D19F20014DC8D /* SXMConversationViewController.h */,
 				A12792EE158D19F20014DC8D /* SXMConversationViewController.m */,
 				A12792F0158D19F20014DC8D /* SXMMessageViewController.h */,
@@ -571,6 +593,16 @@
 				A1CC35A2159E111C00DD28CD /* SXMMessage.h */,
 				A1CC35A3159E111C00DD28CD /* SXMMessage.m */,
 				A1CC35A0159E111B00DD28CD /* SXMConversation.m */,
+				A10539C515A5F35500275717 /* SXMAccount.h */,
+				A10539C615A5F35500275717 /* SXMAccount.m */,
+				A10539CA15A622FB00275717 /* SXMAccountDetailViewController.h */,
+				A10539CB15A622FC00275717 /* SXMAccountDetailViewController.m */,
+				A10539CD15A62AE700275717 /* SXMNewJabberAccountController.h */,
+				A10539CE15A62AE800275717 /* SXMNewJabberAccountController.m */,
+				A10539D015A62C6B00275717 /* SXMViewJabberAccountController.h */,
+				A10539D115A62C6B00275717 /* SXMViewJabberAccountController.m */,
+				A10539D615A62F8200275717 /* SXMAccountViewController.h */,
+				A10539D715A62F8200275717 /* SXMAccountViewController.m */,
 			);
 			path = "Peer Privacy";
 			sourceTree = "<group>";
@@ -619,6 +651,7 @@
 				A113CAE115967EB700807CF1 /* defaultPerson.png */,
 				A1279311158D1A6B0014DC8D /* icon.png */,
 				A1279312158D1A6B0014DC8D /* icon@2x.png */,
+				A10539C815A60F2500275717 /* accountdefaults.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1342,6 +1375,7 @@
 				A15F0BD2159EADFF00DBB796 /* IASKSpecifierValuesView.xib in Resources */,
 				A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */,
 				A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */,
+				A10539C915A60F2500275717 /* accountdefaults.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1489,6 +1523,12 @@
 				A15F0BCA159EADFF00DBB796 /* IASKSlider.m in Sources */,
 				A15F0BCB159EADFF00DBB796 /* IASKSwitch.m in Sources */,
 				A15F0BCC159EADFF00DBB796 /* IASKTextField.m in Sources */,
+				A10539C715A5F35600275717 /* SXMAccount.m in Sources */,
+				A10539CC15A622FC00275717 /* SXMAccountDetailViewController.m in Sources */,
+				A10539CF15A62AE800275717 /* SXMNewJabberAccountController.m in Sources */,
+				A10539D215A62C6B00275717 /* SXMViewJabberAccountController.m in Sources */,
+				A10539D515A62E1800275717 /* SXMViewFacebookAccountController.m in Sources */,
+				A10539D815A62F8300275717 /* SXMAccountViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

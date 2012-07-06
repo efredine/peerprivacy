@@ -266,7 +266,7 @@
     }
     else {
         cell.textLabel.text = user.displayName;
-        cell.detailTextLabel.text = conversation.streamManager.name;
+        cell.detailTextLabel.text = conversation.streamManager.account.name;
         [self configurePhotoForCell:cell user:user];
     }
 }

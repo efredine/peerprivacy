@@ -44,7 +44,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([defaults objectForKey:@"FBAccessTokenKey"] 
         && [defaults objectForKey:@"FBExpirationDateKey"]) {
-        DDLogVerbose(@"Using existing FB token");
+        DDLogVerbose(@"Using existing FB token: %@", [defaults objectForKey:@"FBAccessTokenKey"]);
         facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
         facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
     }

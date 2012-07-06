@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "XMPPFramework.h"
+#import "SXMAccount.h"
+
 
 @interface SXMStreamManager : NSObject
 
@@ -25,7 +27,7 @@
 @property (nonatomic) BOOL allowSSLHostNameMismatch;
 @property (nonatomic) BOOL isXmppConnected;
 
-@property (nonatomic, copy) NSString *name;
+@property (nonatomic, strong) SXMAccount *account;
 
 - (XMPPStream *)allocateStream;
 - (void)configureStream;
