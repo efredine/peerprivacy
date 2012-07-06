@@ -11,6 +11,7 @@
 #import "XMPPMessage.h"
 #import "XMPPRosterCoreDataStorage.h"
 #import "SXMStreamCoordinator.h"
+#import "SXMAccount.h"
 
 
 @implementation SXMConversation
@@ -21,6 +22,7 @@
 @dynamic streamBareJidStr;
 @dynamic numUnread;
 @dynamic messages;
+@dynamic account;
 
 + (SXMConversation *)conversationForJidStr: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context
 {
@@ -51,6 +53,7 @@
 
 + (SXMConversation *)insertNewConversationForJidStr:(NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context
 {
+    
     SXMConversation *newConversation = [NSEntityDescription
                                         insertNewObjectForEntityForName:@"SXMConversation"
                                         inManagedObjectContext:context];
@@ -61,6 +64,10 @@
     newConversation.streamBareJidStr = streamBareJidStr;
     newConversation.jidStr = jidStr;
     newConversation.numUnread = [NSNumber numberWithInt:0];
+ 
+    SXMAccount *account = [SXMAccount accountForStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
+    newConversation.account = account;
+    [account addConversationsObject:newConversation];
     
     return newConversation;
 }

@@ -19,13 +19,14 @@
 
 @interface SXMStreamCoordinator : NSObject
 
-@property (nonatomic, strong) NSMutableDictionary *streamDictionary;
+@property (nonatomic, strong) NSMutableArray *managedStreams;
 
 + (SXMStreamCoordinator *) sharedInstance;
-
 - (void) configureStreams;
-- (SXMStreamManager *) allocateStreamManagerforAccount: (SXMAccount *)account;
-- (SXMStreamManager *) streamManagerforName: (NSString *)streamName;
+- (SXMStreamManager *)allocateStreamManagerforAccount: (SXMAccount *)account;
+- (SXMStreamManager *) streamManagerForObjectPassingTest: (BOOL (^)(SXMStreamManager *obj, NSUInteger idx, BOOL *stop))predicate;
+- (SXMStreamManager *) streamManagerforAccount: (SXMAccount *)account;
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
+- (SXMStreamManager *) streamManagerforAccountType: (NSUInteger) accountType;
 
 @end

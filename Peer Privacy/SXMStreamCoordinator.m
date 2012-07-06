@@ -9,10 +9,11 @@
 #import "SXMStreamCoordinator.h"
 #import "SXMFacebookStreamManager.h"
 #import "SXMJabberStreamManager.h"
+#import "SXMAppDelegate.h"
 
 @implementation SXMStreamCoordinator
 
-@synthesize streamDictionary;
+@synthesize managedStreams;
 
 static SXMStreamCoordinator *sharedInstance = nil;
 
@@ -24,11 +25,17 @@ static SXMStreamCoordinator *sharedInstance = nil;
     return sharedInstance;
 }
 
+
+- (SXMAppDelegate *)appDelegate
+{
+	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
 #pragma mark initialization
 
 - (id)init {
     if (self = [super init]) {
-        streamDictionary = [[NSMutableDictionary alloc] init];
+        self.managedStreams = [[NSMutableArray alloc] init];
         [self configureStreams];
         [self initailizeNotifications];
      }
@@ -38,71 +45,86 @@ static SXMStreamCoordinator *sharedInstance = nil;
 #pragma configuration
 
 - (void) configureStreams {
-    
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    if (nil == [streamDictionary valueForKey: kFacebookStreamName] ) {
-//        
-//    }
-//    else if (![defaults boolForKey:kFaceBookEnabled]){
-//        [streamDictionary removeObjectForKey:kFacebookStreamName];
-//    }
-//    
-//    if (nil == [streamDictionary valueForKey: kGoogleStreamName] ) {
-//        if ( [defaults boolForKey:kGoogleEnabled] ) {
-//            NSString *theJID = [defaults stringForKey:kGmailAddress];
-//            NSString *thePassword = [defaults stringForKey:kGmailPassword];
-//            SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
-//            [googleStreamManager connect];
-//            [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
-//            googleStreamManager.name = @"Google";
-//        }
-//    }
-//    else if (![defaults boolForKey:kGoogleEnabled]){
-//        [streamDictionary removeObjectForKey:kGoogleStreamName];
-//    }
-
+    NSArray *activeAccounts = [SXMAccount activeAccountsInManagedContext:[self appDelegate].managedObjectContext];
+    for (SXMAccount *account in activeAccounts) {
+        [self allocateStreamManagerforAccount:account];
+    }
 }
 
 #pragma mark Allocate a stream
 
 - (SXMStreamManager *)allocateStreamManagerforAccount: (SXMAccount *)account
 {
+    SXMStreamManager *streamManager = [self streamManagerforAccount:account];
+    if (streamManager != nil) 
+    {
+        return streamManager;
+    }
     if (account.accountType == kFacebookAccountType) 
     {
-        SXMFacebookStreamManager *faceBookStreamManager = [[SXMFacebookStreamManager alloc] init];
-        [streamDictionary setObject:faceBookStreamManager forKey:kFacebookStreamName];
-        faceBookStreamManager.account = account;
-        return faceBookStreamManager;
+        streamManager = [[SXMFacebookStreamManager alloc] init];
     }
     else if (account.accountType == kGoogleAccountType)
     {
         NSString *theJID = account.userId;
         NSString *thePassword = account.password;
-        SXMJabberStreamManager *googleStreamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
-        [streamDictionary setObject:googleStreamManager forKey:kGoogleStreamName];
-        googleStreamManager.account = account;
-        return googleStreamManager;
+        streamManager = [[SXMJabberStreamManager alloc] initWithJID:theJID andPassword:thePassword ];
     }
-    return nil;
+    if (nil != streamManager) 
+    {
+        streamManager.account = account;
+        [managedStreams addObject:streamManager];
+    }
+    return streamManager;
 }
 
 #pragma mark Retrieve streams
 
-- (SXMStreamManager *) streamManagerforName: (NSString *)streamName
+- (SXMStreamManager *) streamManagerForObjectPassingTest: (BOOL (^)(SXMStreamManager *obj, NSUInteger idx, BOOL *stop))predicate
 {
-    return [streamDictionary objectForKey:streamName];
+    SXMStreamManager *result = nil;
+    NSUInteger index = [managedStreams indexOfObjectPassingTest:predicate];    
+    if (index != NSNotFound) 
+    {
+        result = [managedStreams objectAtIndex:index];
+    }
+    return result;   
 }
+
+- (SXMStreamManager *) streamManagerforAccount: (SXMAccount *)account
+{
+    return [self streamManagerForObjectPassingTest:^BOOL(SXMStreamManager *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj.account isEqual:account]) 
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];
+ }
 
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr
 {
-    NSLog(@"streamManager for %@", streamBareJidStr);
-    for (SXMStreamManager *aStreamManager in [self.streamDictionary allValues] ) {
-        NSLog(@"Testing %@", aStreamManager.xmppStream.myJID.bare);
-        if ([aStreamManager.xmppStream.myJID.bare isEqualToString:streamBareJidStr]) {
-            return aStreamManager;
+    return [self streamManagerForObjectPassingTest:^BOOL(SXMStreamManager *obj, NSUInteger idx, BOOL *stop) {
+        if ([obj.xmppStream.myJID.bare isEqualToString:streamBareJidStr]) 
+        {
+            *stop = YES;
+            return YES;
         }
-    }
-    return nil;
+        return NO;
+    }];
+}
+
+- (SXMStreamManager *) streamManagerforAccountType: (NSUInteger) accountType
+{
+    return [self streamManagerForObjectPassingTest:^BOOL(SXMStreamManager *obj, NSUInteger idx, BOOL *stop) {
+        if (obj.account.accountType == accountType) 
+        {
+            *stop = YES;
+            return YES;
+        }
+        return NO;
+    }];    
 }
 
 #pragma mark Foreground Notifications

@@ -26,6 +26,7 @@
 #import "SXMAccount.h"
 #import "SXMStreamManager.h"
 #import "SXMFacebookStreamManager.h"
+#import "SXMAccount.h"
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
@@ -35,7 +36,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #endif
 
 #define kConversationControllerIndex 0
-#define kTabBarControllerIndex 1
+#define kSettingsControllerIndex 1
 
 @interface SXMAppDelegate()
 @end
@@ -93,6 +94,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [defaults synchronize];
     }
     
+   
     // Override point for customization after application launch.
 //    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
 //    SXMConversationViewController *controller = (SXMConversationViewController *)navigationController.topViewController;
@@ -101,9 +103,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     self.tabBarController = (UITabBarController *)self.window.rootViewController;
     self.tabBarController.delegate = self;
     
-    IASKAppSettingsViewController *settingsController = (IASKAppSettingsViewController *) [self.tabBarController.viewControllers objectAtIndex:kTabBarControllerIndex];
-    settingsController.delegate = self;
+//    IASKAppSettingsViewController *settingsController = (IASKAppSettingsViewController *) [self.tabBarController.viewControllers objectAtIndex:kTabBarControllerIndex];
+//    settingsController.delegate = self;
 
+    NSUInteger activeAccounts = [SXMAccount numberOfActiveAccountsInManagedContext:self.managedObjectContext];
+    if ( activeAccounts == 0 ) {
+        UIViewController *settingsController = [self.tabBarController.viewControllers objectAtIndex:kSettingsControllerIndex];
+        self.tabBarController.selectedViewController = settingsController;
+    }
+    
     // The XMPP streams
     self.streamCoordinator = [SXMStreamCoordinator sharedInstance];
     
@@ -259,7 +267,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
-    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforName:kFacebookStreamName];
+    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforAccountType:kFacebookAccountType];
     
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 }
@@ -270,7 +278,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
    	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 	
-    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforName:kFacebookStreamName];
+    SXMStreamManager *facebookStreamManager = [self.streamCoordinator streamManagerforAccountType:kFacebookAccountType];
     return [[facebookStreamManager valueForKey:@"facebook"] handleOpenURL:url];
 
 }

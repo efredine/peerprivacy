@@ -24,12 +24,17 @@
 @property (nonatomic) BOOL configured;
 @property (nonatomic) int16_t accountType;
 @property (nonatomic, retain) NSSet *conversations;
+@property (nonatomic, retain) NSString * streamBareJidStr;
 
 /**
  ** Accounts aren't really deleted.  The old account is deleted but then a new place holder account to be configured is added back.
  **
  */
 + (SXMAccount *)deleteAndReallocate: (SXMAccount *)oldAccount inManagedObjectContext: (NSManagedObjectContext *)context;
+
++ (NSArray *)activeAccountsInManagedContext: (NSManagedObjectContext *)context;
++ (NSUInteger)numberOfActiveAccountsInManagedContext: (NSManagedObjectContext *)context;
++ (SXMAccount *)accountForStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext *)context;
 
 @end
 

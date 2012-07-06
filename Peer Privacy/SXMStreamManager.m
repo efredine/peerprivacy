@@ -345,6 +345,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     
+    // TODO: verify this is the right place to do this!
+    self.account.streamBareJidStr = [self.xmppStream.myJID bare];
+    [[self appDelegate] saveContext];
+    DDLogVerbose(@"Saved account streamBareJidStr: %@", self.account.streamBareJidStr);
+    
     [self fireCompletion:YES];	
 	[self goOnline];
 }

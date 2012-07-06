@@ -17,7 +17,7 @@
         <attribute name="lastUpdatedTimestamp" attributeType="Date" indexed="YES" syncable="YES"/>
         <attribute name="numUnread" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="streamBareJidStr" attributeType="String" indexed="YES" syncable="YES"/>
-        <relationship name="account" optional="YES" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="SXMAccount" inverseName="conversations" inverseEntity="SXMAccount" syncable="YES"/>
+        <relationship name="account" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="SXMAccount" inverseName="conversations" inverseEntity="SXMAccount" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="SXMMessage" inverseName="conversation" inverseEntity="SXMMessage" syncable="YES"/>
     </entity>
     <entity name="SXMMessage" representedClassName="SXMMessage" syncable="YES">
@@ -29,8 +29,8 @@
         <relationship name="conversation" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="SXMConversation" inverseName="messages" inverseEntity="SXMConversation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SXMConversation" positionX="-45" positionY="189" width="128" height="135"/>
-        <element name="SXMMessage" positionX="135" positionY="309" width="128" height="135"/>
         <element name="SXMAccount" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="SXMConversation" positionX="-45" positionY="189" width="128" height="150"/>
+        <element name="SXMMessage" positionX="135" positionY="309" width="128" height="135"/>
     </elements>
 </model>

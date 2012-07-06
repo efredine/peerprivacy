@@ -21,8 +21,10 @@
 @property (nonatomic, retain) NSString * streamBareJidStr;
 @property (nonatomic, retain) NSNumber * numUnread;
 @property (nonatomic, retain) NSSet *messages;
+@property (nonatomic, retain) SXMAccount *account;
 @property (nonatomic, readonly) XMPPUserCoreDataStorageObject *user;
 @property (nonatomic, readonly) SXMStreamManager *streamManager;
+
 
 + (SXMConversation *)conversationForJidStr: (NSString *)jidStr andStreamBareJidStr: (NSString *)streamBareJidStr inManagedObjectContext: (NSManagedObjectContext*) context;
 
