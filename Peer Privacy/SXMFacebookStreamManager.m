@@ -107,6 +107,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     self.account.streamBareJidStr = [self.xmppStream.myJID bare];
     DDLogVerbose(@"Saved streamBareJidStr from facebook graph api: %@", self.account.streamBareJidStr);
+    [self saveContext];
+    [self goOnline];
 
     [facebook requestWithGraphPath:@"me" andDelegate:self];
 
@@ -123,8 +125,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	DDLogVerbose(@"%@: facebook.accessToken: %@", THIS_FILE, facebook.accessToken);
 	DDLogVerbose(@"%@: facebook.expirationDate: %@", THIS_FILE, facebook.expirationDate);
     
+ 
     self.account.accessToken = [facebook accessToken];
     self.account.accessTokenExpirationDate = [facebook expirationDate];
+    self.account.configured = YES;
+    [self saveContext];
     
 	NSError *error = nil;
 	if (![self.xmppStream connect:&error])
@@ -171,14 +176,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
  */
 - (void)request:(FBRequest *)request didLoad:(id)result{
     
-    self.account.configured = YES;
     self.account.userId = [result objectForKey:@"name"];
     [self saveContext];
-    
+    [self fireCompletion:YES];	
+   
     DDLogVerbose(@"Saved name from facebook graph api: %@", self.account.userId);
     
-    [self fireCompletion:YES];	
-    [self goOnline];
 }
 
 /**

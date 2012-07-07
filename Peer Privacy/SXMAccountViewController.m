@@ -110,9 +110,9 @@
     
     if (account.configured) {
         cell = [tableView dequeueReusableCellWithIdentifier:@"ViewAccountDetails"];
-        cell.textLabel.text = account.userId;
-        cell.detailTextLabel.text = account.name;
-      }
+        cell.textLabel.text =account.name; 
+        cell.detailTextLabel.text = account.userId;
+    }
     else {
         if (account.accountType == kFacebookAccountType) {
             cell = [tableView dequeueReusableCellWithIdentifier: @"ConfigureFacebook"];
@@ -149,6 +149,7 @@
         [stream connectWithCompletion:^(BOOL connected) {
             if (connected) {
                 // any connect related activity
+                [self.tableView reloadData];
             }
             else {
                 // display an alert telling the user to try again!
@@ -277,9 +278,8 @@
 
 - (void)SXMNewJabbberAccountController:(SXMEditJabberAccountController *)sender withAccount:(SXMAccount *)account
 {
-    [self dismissViewControllerAnimated:YES completion: nil];
-    [self.tableView reloadData];
     [[self appDelegate] saveContext];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end
