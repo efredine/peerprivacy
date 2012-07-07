@@ -138,11 +138,26 @@
 }
 
 
-//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    NSLog(@"Selected account");
-//    self.selectedAccount = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    SXMAccount *account = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (!account.configured && account.accountType == kFacebookAccountType) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        
+        SXMStreamCoordinator *streamCoordinator = [SXMStreamCoordinator sharedInstance];
+        SXMStreamManager *stream = [streamCoordinator allocateStreamManagerforAccount:account];
+        [stream connectWithCompletion:^(BOOL connected) {
+            if (connected) {
+                // any connect related activity
+            }
+            else {
+                // display an alert telling the user to try again!
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Connection failed" message:@"Check your user id and password and try again" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert  show];
+            }
+        }];
+    }    
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

@@ -21,6 +21,8 @@
 @dynamic accountType;
 @dynamic conversations;
 @dynamic streamBareJidStr;
+@dynamic accessToken;
+@dynamic accessTokenExpirationDate;
 
 + (SXMAccount *)deleteAndReallocate: (SXMAccount *)oldAccount inManagedObjectContext: (NSManagedObjectContext *)context
 {

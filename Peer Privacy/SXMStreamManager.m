@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
-#import "SXMAppDelegate.h"
 #import "SXMStreamManager.h"
 #import "SXMConversation.h"
 #import "SXMMessage.h"
+#import "SXMAppDelegate.h"
 
 #import "GCDAsyncSocket.h"
 #import "XMPP.h"
@@ -59,6 +59,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (SXMAppDelegate *)appDelegate
 {
 	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
+- (void)saveContext
+{
+    [[self appDelegate] saveContext];
 }
 
 - (id)init

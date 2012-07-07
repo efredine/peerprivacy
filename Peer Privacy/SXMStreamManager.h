@@ -30,6 +30,9 @@
 @property (nonatomic, strong) SXMAccount *account;
 @property (nonatomic, strong) void (^connectCompletion)(BOOL connected);
 
+
+- (void)saveContext;
+
 - (XMPPStream *)allocateStream;
 - (void)configureStream;
 - (void)teardownStream;

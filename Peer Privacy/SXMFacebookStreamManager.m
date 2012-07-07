@@ -41,12 +41,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     DDLogVerbose(@"Facebook connect");
     facebook = [[Facebook alloc] initWithAppId:FACEBOOK_APP_ID andDelegate:self];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([defaults objectForKey:@"FBAccessTokenKey"] 
-        && [defaults objectForKey:@"FBExpirationDateKey"]) {
-        DDLogVerbose(@"Using existing FB token: %@", [defaults objectForKey:@"FBAccessTokenKey"]);
-        facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
-        facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
+    if (self.account.configured) {
+        DDLogVerbose(@"Using existing FB token: %@", self.account.accessToken);
+        facebook.accessToken = self.account.accessToken;
+        facebook.expirationDate = self.account.accessTokenExpirationDate;
     }
     
     if (![facebook isSessionValid]) {
@@ -62,10 +60,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         {
             DDLogError(@"%@: Error in xmpp connection: %@", THIS_FILE, error);
         }
-        DDLogVerbose(@"myJID = %@", [self.xmppStream.myJID full]);
     }
     
-    NSLog(@"Returning from connect request");
     return YES;
     
 }
@@ -99,9 +95,6 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             DDLogError(@"%@: Error in xmpp auth: %@", THIS_FILE, error);
         }
     } 
-    DDLogVerbose(@"Did connect myJID = %@", [self.xmppStream.myJID full]);
-
-    
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,18 +107,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	DDLogVerbose(@"%@: facebook.accessToken: %@", THIS_FILE, facebook.accessToken);
 	DDLogVerbose(@"%@: facebook.expirationDate: %@", THIS_FILE, facebook.expirationDate);
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[facebook accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[facebook expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];
-
+    self.account.accessToken = [facebook accessToken];
+    self.account.accessTokenExpirationDate = [facebook expirationDate];
+    self.account.configured = YES;
+    
+    [self saveContext];
     
 	NSError *error = nil;
 	if (![self.xmppStream connect:&error])
 	{
 		DDLogError(@"%@: Error in xmpp connection: %@", THIS_FILE, error);
 	}
-    DDLogVerbose(@"did login myJID = %@", [self.xmppStream.myJID full]);
 }
 
 - (void)fbDidNotLogin:(BOOL)cancelled
