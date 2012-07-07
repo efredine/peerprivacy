@@ -30,7 +30,7 @@
                            insertNewObjectForEntityForName:@"SXMAccount" 
                            inManagedObjectContext:context];
     
-    newAccount.name = oldAccount.name;
+    newAccount.name = [oldAccount.name copy];
     newAccount.accountType = oldAccount.accountType;
     newAccount.configured = NO;
     newAccount.enabled = YES;

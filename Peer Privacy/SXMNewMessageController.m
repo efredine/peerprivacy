@@ -147,7 +147,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 		fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
 		                                                               managedObjectContext:moc
 		                                                                 sectionNameKeyPath:@"sectionNum"
-		                                                                          cacheName:nil];
+		                                                                          cacheName:@"NewMessageCache"];
 		[fetchedResultsController setDelegate:self];
 		
 		

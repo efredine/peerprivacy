@@ -10,6 +10,7 @@
 #import "XMPPFramework.h"
 #import "SXMAccount.h"
 
+@class SXMStreamCoordinator;
 
 @interface SXMStreamManager : NSObject
 
@@ -28,6 +29,7 @@
 @property (nonatomic) BOOL isXmppConnected;
 
 @property (nonatomic, strong) SXMAccount *account;
+@property (nonatomic, strong) SXMStreamCoordinator *streamCoordinator;
 @property (nonatomic, strong) void (^connectCompletion)(BOOL connected);
 
 

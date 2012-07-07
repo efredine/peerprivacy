@@ -47,7 +47,8 @@ static SXMStreamCoordinator *sharedInstance = nil;
 - (void) configureStreams {
     NSArray *activeAccounts = [SXMAccount activeAccountsInManagedContext:[self appDelegate].managedObjectContext];
     for (SXMAccount *account in activeAccounts) {
-        [self allocateStreamManagerforAccount:account];
+        SXMStreamManager *aStreamManager = [self allocateStreamManagerforAccount:account];
+        [aStreamManager connect];
     }
 }
 
@@ -73,6 +74,7 @@ static SXMStreamCoordinator *sharedInstance = nil;
     if (nil != streamManager) 
     {
         streamManager.account = account;
+        streamManager.streamCoordinator = self;
         [managedStreams addObject:streamManager];
     }
     return streamManager;
@@ -125,6 +127,11 @@ static SXMStreamCoordinator *sharedInstance = nil;
         }
         return NO;
     }];    
+}
+
+- (void) removeStreamManager:(SXMStreamManager *)streamManager
+{
+    [self.managedStreams removeObject:streamManager];
 }
 
 #pragma mark Foreground Notifications

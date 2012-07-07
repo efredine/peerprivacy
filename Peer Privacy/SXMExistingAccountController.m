@@ -9,6 +9,8 @@
 #import "SXMExistingAccountController.h"
 #import "SXMAppDelegate.h"
 #import "XMPPRosterCoreDataStorage.h"
+#import "SXMStreamCoordinator.h"
+#import "SXMStreamManager.h"
 
 @interface SXMExistingAccountController ()
 
@@ -92,6 +94,10 @@
 
 - (void)deleteAccount
 {
+    // disconnect the stream
+    SXMStreamManager *streamManager = [[SXMStreamCoordinator sharedInstance] streamManagerforAccount:self.account];
+    [streamManager disconnect];
+    
     // find and delete roster entries
     [self deleteAccountRoster];
      
@@ -100,8 +106,7 @@
     self.account = [SXMAccount deleteAndReallocate:self.account inManagedObjectContext:context];
     [[self appDelegate] saveContext];
     
-    
-    
+    // pop the view
     UINavigationController *myNavigationContoller = (UINavigationController *)self.parentViewController;
     [myNavigationContoller popViewControllerAnimated:YES];
 }

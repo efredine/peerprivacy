@@ -43,6 +43,8 @@
     self.navigationItem.rightBarButtonItem = composeButton;
     
     self.managedObjectContext = [self appDelegate].managedObjectContext;
+    
+    [SXMStreamCoordinator sharedInstance];
 }
 
 - (void)viewDidUnload
@@ -191,7 +193,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"ConversationCache"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
@@ -266,7 +268,7 @@
     }
     else {
         cell.textLabel.text = user.displayName;
-        cell.detailTextLabel.text = conversation.streamManager.account.name;
+        cell.detailTextLabel.text = conversation.account.name;
         [self configurePhotoForCell:cell user:user];
     }
 }

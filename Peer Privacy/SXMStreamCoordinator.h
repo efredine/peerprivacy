@@ -23,10 +23,11 @@
 
 + (SXMStreamCoordinator *) sharedInstance;
 - (void) configureStreams;
-- (SXMStreamManager *)allocateStreamManagerforAccount: (SXMAccount *)account;
+- (SXMStreamManager *) allocateStreamManagerforAccount: (SXMAccount *)account;
 - (SXMStreamManager *) streamManagerForObjectPassingTest: (BOOL (^)(SXMStreamManager *obj, NSUInteger idx, BOOL *stop))predicate;
 - (SXMStreamManager *) streamManagerforAccount: (SXMAccount *)account;
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
 - (SXMStreamManager *) streamManagerforAccountType: (NSUInteger) accountType;
+- (void) removeStreamManager: (SXMStreamManager *) streamManager;
 
 @end

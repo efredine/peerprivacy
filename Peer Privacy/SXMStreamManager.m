@@ -54,6 +54,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 @synthesize isXmppConnected;
 
 @synthesize account;
+@synthesize streamCoordinator;
 @synthesize connectCompletion;
 
 - (SXMAppDelegate *)appDelegate
@@ -451,6 +452,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [self fireCompletion:NO];	
 		DDLogError(@"Unable to connect to server. Check xmppStream.hostName");
 	}
+    
+    [self.streamCoordinator removeStreamManager:self];
 }
 
 - (void)xmppStreamDidConnect:(XMPPStream *)sender

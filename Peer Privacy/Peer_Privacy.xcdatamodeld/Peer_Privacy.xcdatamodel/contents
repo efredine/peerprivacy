@@ -31,8 +31,8 @@
         <relationship name="conversation" minCount="1" maxCount="1" deletionRule="Deny" destinationEntity="SXMConversation" inverseName="messages" inverseEntity="SXMConversation" syncable="YES"/>
     </entity>
     <elements>
-        <element name="SXMAccount" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="SXMConversation" positionX="-45" positionY="189" width="128" height="135"/>
+        <element name="SXMAccount" positionX="160" positionY="192" width="128" height="180"/>
+        <element name="SXMConversation" positionX="-45" positionY="189" width="128" height="150"/>
         <element name="SXMMessage" positionX="135" positionY="309" width="128" height="135"/>
     </elements>
 </model>
