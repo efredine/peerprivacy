@@ -262,15 +262,10 @@
 {
     SXMConversation *conversation = [self.fetchedResultsController objectAtIndexPath:indexPath];
     XMPPUserCoreDataStorageObject *user = conversation.user;    
-    if (user == nil)
-    {
-        NSLog(@"Didn't find user");
-    }
-    else {
-        cell.textLabel.text = user.displayName;
-        cell.detailTextLabel.text = conversation.account.name;
-        [self configurePhotoForCell:cell user:user];
-    }
+    cell.textLabel.text = user.displayName;
+    cell.detailTextLabel.text = conversation.account.name;
+//    [self configurePhotoForCell:cell user:user];
+
 }
 
 #pragma mark New Message Delegate Protocol

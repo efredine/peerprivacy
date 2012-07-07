@@ -29,5 +29,6 @@
 - (SXMStreamManager *) streamManagerforStreamBareJidStr:(NSString *)streamBareJidStr;
 - (SXMStreamManager *) streamManagerforAccountType: (NSUInteger) accountType;
 - (void) removeStreamManager: (SXMStreamManager *) streamManager;
+- (void) releaseAll;
 
 @end

@@ -37,7 +37,7 @@ static SXMStreamCoordinator *sharedInstance = nil;
     if (self = [super init]) {
         self.managedStreams = [[NSMutableArray alloc] init];
         [self configureStreams];
-        [self initailizeNotifications];
+//        [self initailizeNotifications];
      }
     return (self);
 }
@@ -48,8 +48,18 @@ static SXMStreamCoordinator *sharedInstance = nil;
     NSArray *activeAccounts = [SXMAccount activeAccountsInManagedContext:[self appDelegate].managedObjectContext];
     for (SXMAccount *account in activeAccounts) {
         SXMStreamManager *aStreamManager = [self allocateStreamManagerforAccount:account];
-        [aStreamManager connect];
+        XMPPStream *xmppStream = aStreamManager.xmppStream;
+        if (xmppStream.isDisconnected) {
+            [aStreamManager connect];
+        }
     }
+}
+
+- (void) releaseAll {
+    for (SXMStreamManager *aStreamManager in managedStreams) {
+        [aStreamManager disconnect];
+    }
+    self.managedStreams = [[NSMutableArray alloc] init];
 }
 
 #pragma mark Allocate a stream
@@ -134,26 +144,26 @@ static SXMStreamCoordinator *sharedInstance = nil;
     [self.managedStreams removeObject:streamManager];
 }
 
-#pragma mark Foreground Notifications
-
-- (void)initailizeNotifications
-{
-    UIApplication *app = [UIApplication sharedApplication];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(applicationWillEnterForeground:)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:app];
-}
-
-- (void)applicationWillEnterForeground:(NSNotification *)notification 
-{
-    [self configureStreams];
-}
-
-- (void) dealloc
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
+//#pragma mark Foreground Notifications
+//
+//- (void)initailizeNotifications
+//{
+//    UIApplication *app = [UIApplication sharedApplication];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(applicationWillEnterForeground:)
+//                                                 name:UIApplicationWillEnterForegroundNotification
+//                                               object:app];
+//}
+//
+//- (void)applicationWillEnterForeground:(NSNotification *)notification 
+//{
+//    [self configureStreams];
+//}
+//
+//- (void) dealloc
+//{
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//}
 
 
 @end

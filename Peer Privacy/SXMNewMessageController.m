@@ -8,6 +8,7 @@
 
 #import "SXMNewMessageController.h"
 #import "SXMAppDelegate.h"
+#import "SXMAccount.h"
 #import "SXMStreamManager.h"
 #import "XMPPFramework.h"
 #import "DDLog.h"
@@ -305,16 +306,18 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
 	if (cell == nil)
 	{
-		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
                                       reuseIdentifier:CellIdentifier];
 	}
     
     NSFetchedResultsController * aFetchedResultsController = [self fetchedResultsControllerForTableView: tableView];
 	
 	XMPPUserCoreDataStorageObject *user = [aFetchedResultsController objectAtIndexPath:indexPath];
+    SXMAccount *account = [SXMAccount accountForStreamBareJidStr:user.streamBareJidStr inManagedObjectContext:[self appDelegate].managedObjectContext];
 	
 	cell.textLabel.text = user.displayName;
-	[self configurePhotoForCell:cell user:user];
+    cell.detailTextLabel.text = account.name;
+//	[self configurePhotoForCell:cell user:user];
 	
 	return cell;
 }

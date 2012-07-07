@@ -39,6 +39,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 #define kSettingsControllerIndex 1
 
 @interface SXMAppDelegate()
+@property  __block UIBackgroundTaskIdentifier taskId;
+@property BOOL pendBackgroundTask;
 @end
 
 @implementation SXMAppDelegate
@@ -50,6 +52,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 @synthesize streamCoordinator;
 @synthesize tabBarController;
+@synthesize taskId;
+@synthesize pendBackgroundTask;
 
 - (void)bootStrap
 {
@@ -132,10 +136,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     
-//#if TARGET_IPHONE_SIMULATOR
-//	DDLogError(@"The iPhone simulator does not process background network traffic. "
-//			   @"Inbound traffic is queued until the keepAliveTimeout:handler: fires.");
-//#endif
+#if TARGET_IPHONE_SIMULATOR
+	DDLogError(@"The iPhone simulator does not process background network traffic. "
+			   @"Inbound traffic is queued until the keepAliveTimeout:handler: fires.");
+#endif
     
 //	if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)]) 
 //	{
@@ -146,11 +150,30 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //			// Do other keep alive stuff here.
 //		}];
 //	}
+
+   taskId = [application beginBackgroundTaskWithExpirationHandler:^{
+        NSLog(@"Background task ran out of time and was terminated.");
+        [streamCoordinator releaseAll];
+        [application endBackgroundTask:taskId];
+    }];
+    
+    if (taskId == UIBackgroundTaskInvalid) {
+        NSLog(@"Failed to start background task!");
+        return;
+    }
+    else {
+        pendBackgroundTask = YES;
+    }
+
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    if (self.pendBackgroundTask) {
+        [application endBackgroundTask:taskId];
+    }
+    [streamCoordinator configureStreams];
     
     DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 }
@@ -163,6 +186,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
+    [streamCoordinator releaseAll];
     [self saveContext];
 }
 

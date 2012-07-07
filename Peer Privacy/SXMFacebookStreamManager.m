@@ -38,6 +38,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(BOOL)connect
 {
+    if (![self.xmppStream isDisconnected]) {
+		return YES;
+	}
+
     DDLogVerbose(@"Facebook connect");
     facebook = [[Facebook alloc] initWithAppId:FACEBOOK_APP_ID andDelegate:self];
     

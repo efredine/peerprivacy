@@ -121,19 +121,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
 	
 #if !TARGET_IPHONE_SIMULATOR
-    //	{
-    //		// Want xmpp to run in the background?
-    //		// 
-    //		// P.S. - The simulator doesn't support backgrounding yet.
-    //		//        When you try to set the associated property on the simulator, it simply fails.
-    //		//        And when you background an app on the simulator,
-    //		//        it just queues network traffic til the app is foregrounded again.
-    //		//        We are patiently waiting for a fix from Apple.
-    //		//        If you do enableBackgroundingOnSocket on the simulator,
-    //		//        you will simply see an error message from the xmpp stack when it fails to set the property.
-    //		
-    //		xmppStream.enableBackgroundingOnSocket = YES;
-    //	}
+    {
+        // Want xmpp to run in the background?
+        // 
+        // P.S. - The simulator doesn't support backgrounding yet.
+        //        When you try to set the associated property on the simulator, it simply fails.
+        //        And when you background an app on the simulator,
+        //        it just queues network traffic til the app is foregrounded again.
+        //        We are patiently waiting for a fix from Apple.
+        //        If you do enableBackgroundingOnSocket on the simulator,
+        //        you will simply see an error message from the xmpp stack when it fails to set the property.
+        //		
+        xmppStream.enableBackgroundingOnSocket = YES;
+    }
 #endif
 	
 	// Setup reconnect
@@ -167,10 +167,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	// The vCard Avatar module works in conjuction with the standard vCard Temp module to download user avatars.
 	// The XMPPRoster will automatically integrate with XMPPvCardAvatarModule to cache roster photos in the roster.
 	
-	xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
-	xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
-	
-	xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:xmppvCardTempModule];
+//	xmppvCardStorage = [XMPPvCardCoreDataStorage sharedInstance];
+//	xmppvCardTempModule = [[XMPPvCardTempModule alloc] initWithvCardStorage:xmppvCardStorage];
+//	
+//	xmppvCardAvatarModule = [[XMPPvCardAvatarModule alloc] initWithvCardTempModule:xmppvCardTempModule];
 	
 	// Setup capabilities
 	// 
