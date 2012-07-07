@@ -43,6 +43,7 @@
 - (BOOL)connect;
 - (void)disconnect;
 - (BOOL)connectWithCompletion: (void (^)(BOOL connected))completion; 
+- (void)fireCompletion: (BOOL)didConnect;
 
 - (void) sendMessageWithBody: (NSString *)messageStr andJidStr: (NSString *)jidStr;
 

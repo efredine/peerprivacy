@@ -9,7 +9,7 @@
 #import "SXMStreamManager.h"
 #import "FBConnect.h"
 
-@interface SXMFacebookStreamManager : SXMStreamManager <FBSessionDelegate>
+@interface SXMFacebookStreamManager : SXMStreamManager <FBSessionDelegate, FBRequestDelegate>
 
 @property (nonatomic, strong) Facebook *facebook;
 
