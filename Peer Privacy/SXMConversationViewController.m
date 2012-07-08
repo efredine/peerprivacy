@@ -45,6 +45,8 @@
     self.managedObjectContext = [self appDelegate].managedObjectContext;
     
     [SXMStreamCoordinator sharedInstance];
+    
+    self.clearsSelectionOnViewWillAppear = YES;
 }
 
 - (void)viewDidUnload
@@ -140,6 +142,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [super viewWillAppear:animated];
     [self setEditing:NO animated:NO];
 }
 
@@ -287,8 +290,8 @@
         abort();
     }
     
-    [self dismissViewControllerAnimated:YES completion: nil];
     [self performSegueWithIdentifier:@"showDetail" sender:self];
+    [self dismissViewControllerAnimated:YES completion: nil];
 
 }
 

@@ -160,7 +160,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	xmppRoster = [[XMPPRoster alloc] initWithRosterStorage:xmppRosterStorage];
 	
 	xmppRoster.autoFetchRoster = YES;
-	xmppRoster.autoAcceptKnownPresenceSubscriptionRequests = YES;
+//	xmppRoster.autoAcceptKnownPresenceSubscriptionRequests = YES;
 	
 	// Setup vCard support
 	// 
@@ -201,8 +201,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
 	[xmppReconnect         activate:xmppStream];
 	[xmppRoster            activate:xmppStream];
-	[xmppvCardTempModule   activate:xmppStream];
-	[xmppvCardAvatarModule activate:xmppStream];
+//	[xmppvCardTempModule   activate:xmppStream];
+//	[xmppvCardAvatarModule activate:xmppStream];
 	[xmppCapabilities      activate:xmppStream];
     
 	// Add ourself as a delegate to anything we may be interested in
@@ -267,16 +267,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)goOnline
 {
-	XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
-	
-	[[self xmppStream] sendElement:presence];
+//	XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
+//	
+//	[[self xmppStream] sendElement:presence];
 }
 
 - (void)goOffline
 {
-	XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
-	
-	[[self xmppStream] sendElement:presence];
+//	XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
+//	
+//	[[self xmppStream] sendElement:presence];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

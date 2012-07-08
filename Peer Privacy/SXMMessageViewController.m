@@ -11,6 +11,7 @@
 #import "XMPPRosterCoreDataStorage.h"
 #import "SXMStreamManager.h"
 #import "SXMStreamCoordinator.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define CHAT_BACKGROUND_COLOR [UIColor colorWithRed:0.859f green:0.886f blue:0.929f alpha:1.0f]
 
@@ -46,6 +47,9 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 
 
 @interface SXMMessageViewController ()
+@property BOOL viewInitializing;
+@property BOOL keyBoardVisible;
+@property CGRect keyboardEndFrame;
 @end
 
 @implementation SXMMessageViewController
@@ -62,6 +66,9 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 @synthesize previousContentHeight;
 @synthesize sendButton;
 
+@synthesize viewInitializing, keyBoardVisible;
+@synthesize keyboardEndFrame;
+
 - (SXMAppDelegate *)appDelegate
 {
 	return (SXMAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -72,6 +79,8 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     NSLog(@"viewDidLoad");
+    
+    self.viewInitializing = YES;
     
     self.title = conversation.user.displayName;
     
@@ -153,7 +162,15 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     
     [self.view addSubview:chatBar];
     [self.view sendSubviewToBack:chatBar];
-        
+    
+    // if there are no messages yet, display the keyboard immediately
+    if ([[self.fetchedResultsController sections] count] == 1) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
+        if ([sectionInfo numberOfObjects] == 0){
+            [self.chatInput becomeFirstResponder];
+        }
+    }
+          
     // // Test with lots of messages.
     // NSDate *before = [NSDate date];
     // for (NSUInteger i = 0; i < 500; i++) {
@@ -171,6 +188,8 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     // NSLog(@"Mass message creation error %@, %@", error, [error userInfo]);
     // }
     // NSLog(@"Saving messages to disc takes %f seconds", [before timeIntervalSinceNow]);
+    
+    NSLog(@"End of view Did Load");
     
 }
 
@@ -208,13 +227,40 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-    [chatInput resignFirstResponder];
+//    [chatInput resignFirstResponder];
     [super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+    NSLog(@"Will layout subviews");
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    NSLog(@"Did layout subviews");
+    NSLog(@"view frame: %@", NSStringFromCGRect(self.view.frame));
+    NSLog(@"chatbar frame: %@", NSStringFromCGRect(self.chatBar.frame));
+}
+
+- (void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    if (self.viewInitializing && self.keyBoardVisible) {
+        CGRect viewFrame = self.view.frame;
+        CGRect keyboardFrameEndRelative = [self.view convertRect:keyboardEndFrame fromView:nil];
+        viewFrame.size.height = keyboardFrameEndRelative.origin.y;
+        self.view.frame = viewFrame;
+        [self scrollToBottomAnimated:NO];
+    }
+    self.viewInitializing = NO;
+    NSLog(@"viewDidAppear: %i", animated);
 }
 
 #pragma mark UITextViewDelegate
@@ -309,21 +355,29 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     NSLog(@"Keyboard will show");
-    [self resizeViewWithOptions:[notification userInfo]];
+    if (self.viewInitializing) {
+        [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
+    }
+    else {
+        [self resizeViewWithOptions:[notification userInfo]];
+    }
+    self.keyBoardVisible = YES;
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification {
+    NSLog(@"Keyboard will hide");
     [self resizeViewWithOptions:[notification userInfo]];
+    self.keyBoardVisible = NO;
 }
 
 - (void)resizeViewWithOptions:(NSDictionary *)options {
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
-    CGRect keyboardEndFrame;
     [[options objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[options objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     [[options objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
-    
+ 
+    NSLog(@"animationDuration: %f", animationDuration);
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationCurve:animationCurve];
     [UIView setAnimationDuration:animationDuration];
@@ -343,6 +397,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     
     viewFrame.size.height = keyboardFrameEndRelative.origin.y;
     self.view.frame = viewFrame;
+    
     [UIView commitAnimations];
     
     [self scrollToBottomAnimated:YES];
