@@ -125,6 +125,8 @@
         {
             conversation = conversationSelectedFromNewMessage;
             conversationSelectedFromNewMessage = nil;
+            SXMMessageViewController *messageViewController = (SXMMessageViewController *) [segue destinationViewController];
+            messageViewController.isNewMessageTransition = YES;
         }
         else 
         {

@@ -49,7 +49,6 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 @interface SXMMessageViewController ()
 @property BOOL viewInitializing;
 @property BOOL keyBoardVisible;
-@property CGRect keyboardEndFrame;
 @end
 
 @implementation SXMMessageViewController
@@ -58,16 +57,16 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 @synthesize managedObjectContext = __managedObjectContext;
 
 @synthesize conversation;
+@synthesize isNewMessageTransition;
 
+@synthesize chatView;
 @synthesize chatContent;
-
 @synthesize chatBar;
 @synthesize chatInput;
 @synthesize previousContentHeight;
 @synthesize sendButton;
 
 @synthesize viewInitializing, keyBoardVisible;
-@synthesize keyboardEndFrame;
 
 - (SXMAppDelegate *)appDelegate
 {
@@ -92,6 +91,14 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     
     self.view.backgroundColor = CHAT_BACKGROUND_COLOR; // shown during rotation
     
+    // Create a top level view to contain everything.
+    chatView = [[UIView alloc] initWithFrame: self.view.frame];
+    chatView.autoresizingMask = UIViewAutoresizingNone;
+    chatView.backgroundColor = CHAT_BACKGROUND_COLOR;
+    chatView.clearsContextBeforeDrawing = NO;
+    [self.view addSubview:chatView];
+    [self.view bringSubviewToFront:chatView];
+    
     // Create chatContent.
     chatContent = [[UITableView alloc] initWithFrame:
                    CGRectMake(0.0f, 0.0f, self.view.frame.size.width,
@@ -104,7 +111,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     chatContent.separatorStyle = UITableViewCellSeparatorStyleNone;
     chatContent.autoresizingMask = UIViewAutoresizingFlexibleWidth |
     UIViewAutoresizingFlexibleHeight;
-    [self.view addSubview:chatContent];
+    [chatView addSubview:chatContent];
     
     // Create chatBar.
     chatBar = [[UIImageView alloc] initWithFrame:
@@ -160,8 +167,8 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     [self resetSendButton]; // disable initially
     [chatBar addSubview:sendButton];
     
-    [self.view addSubview:chatBar];
-    [self.view sendSubviewToBack:chatBar];
+    [chatView addSubview:chatBar];
+    [chatView sendSubviewToBack:chatBar];
     
     // if there are no messages yet, display the keyboard immediately
     if ([[self.fetchedResultsController sections] count] == 1) {
@@ -209,12 +216,13 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     [super viewDidUnload];
     
     // Release any retained subviews of the main view.
+    self.chatContent = nil;
     self.chatBar = nil;
-    [chatInput removeObserver:self forKeyPath:@"contentSize"];
     self.chatInput = nil;
     self.sendButton = nil;
     self.conversation = nil;
     self.fetchedResultsController = nil;
+    self.chatView = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -238,6 +246,9 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
+    if (!keyBoardVisible) {
+        chatView.frame = self.view.frame;    
+    }
     NSLog(@"Will layout subviews");
 }
 
@@ -252,13 +263,13 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    if (self.viewInitializing && self.keyBoardVisible) {
-        CGRect viewFrame = self.view.frame;
-        CGRect keyboardFrameEndRelative = [self.view convertRect:keyboardEndFrame fromView:nil];
-        viewFrame.size.height = keyboardFrameEndRelative.origin.y;
-        self.view.frame = viewFrame;
-        [self scrollToBottomAnimated:NO];
-    }
+//    if (self.viewInitializing && self.keyBoardVisible) {
+//        CGRect viewFrame = self.view.frame;
+//        CGRect keyboardFrameEndRelative = [self.view convertRect:keyboardEndFrame fromView:nil];
+//        viewFrame.size.height = keyboardFrameEndRelative.origin.y;
+//        self.view.frame = viewFrame;
+//        [self scrollToBottomAnimated:NO];
+//    }
     self.viewInitializing = NO;
     NSLog(@"viewDidAppear: %i", animated);
 }
@@ -355,12 +366,13 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 
 - (void)keyboardWillShow:(NSNotification *)notification {
     NSLog(@"Keyboard will show");
-    if (self.viewInitializing) {
-        [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
-    }
-    else {
-        [self resizeViewWithOptions:[notification userInfo]];
-    }
+//    if (self.viewInitializing) {
+//        [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
+//    }
+//    else {
+//        [self resizeViewWithOptions:[notification userInfo]];
+//    }
+    [self resizeViewWithOptions:[notification userInfo]];
     self.keyBoardVisible = YES;
 }
 
@@ -373,14 +385,17 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)resizeViewWithOptions:(NSDictionary *)options {
     NSTimeInterval animationDuration;
     UIViewAnimationCurve animationCurve;
+    CGRect keyboardEndFrame;
     [[options objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
     [[options objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
     [[options objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardEndFrame];
  
-    NSLog(@"animationDuration: %f", animationDuration);
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationCurve:animationCurve];
-    [UIView setAnimationDuration:animationDuration];
+    BOOL animating = !(self.viewInitializing && !self.isNewMessageTransition);
+    if (animating) {
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationCurve:animationCurve];
+        [UIView setAnimationDuration:animationDuration];
+    }
     CGRect viewFrame = self.view.frame;
     NSLog(@"viewFrame y: %@", NSStringFromCGRect(viewFrame));
     
@@ -396,11 +411,13 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     NSLog(@"keyboardFrameEndRelative: %@", NSStringFromCGRect(keyboardFrameEndRelative));
     
     viewFrame.size.height = keyboardFrameEndRelative.origin.y;
-    self.view.frame = viewFrame;
+    chatView.frame = viewFrame;
     
-    [UIView commitAnimations];
+    if (animating) {
+        [UIView commitAnimations];
+    }
     
-    [self scrollToBottomAnimated:YES];
+    [self scrollToBottomAnimated:animating];
     
     chatInput.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
     chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk

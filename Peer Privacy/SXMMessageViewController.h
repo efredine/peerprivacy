@@ -16,7 +16,9 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, strong) SXMConversation *conversation;
+@property (nonatomic) BOOL isNewMessageTransition;
 
+@property (nonatomic, retain) UIView *chatView;
 @property (nonatomic, retain) UITableView *chatContent;
 
 @property (nonatomic, retain) UIImageView *chatBar;
