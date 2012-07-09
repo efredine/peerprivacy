@@ -141,29 +141,32 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 			   @"Inbound traffic is queued until the keepAliveTimeout:handler: fires.");
 #endif
     
-//	if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)]) 
-//	{
-//		[application setKeepAliveTimeout:600 handler:^{
-//			
-//			DDLogVerbose(@"KeepAliveHandler");
-//			
-//			// Do other keep alive stuff here.
-//		}];
-//	}
+	if ([application respondsToSelector:@selector(setKeepAliveTimeout:handler:)]) 
+	{
+ 		BOOL result = [application setKeepAliveTimeout:600 handler:^{
+			
+			DDLogVerbose(@"KeepAliveHandler");
+			
+			// Do other keep alive stuff here.
+		}];
+        DDLogVerbose(@"Setting keep alive handler: %d", result);
 
-   taskId = [application beginBackgroundTaskWithExpirationHandler:^{
-        NSLog(@"Background task ran out of time and was terminated.");
-        [streamCoordinator releaseAll];
-        [application endBackgroundTask:taskId];
-    }];
-    
-    if (taskId == UIBackgroundTaskInvalid) {
-        NSLog(@"Failed to start background task!");
-        return;
-    }
-    else {
-        pendBackgroundTask = YES;
-    }
+	}
+
+    // This extends the 'background time' for a while.
+//   taskId = [application beginBackgroundTaskWithExpirationHandler:^{
+//        NSLog(@"Background task ran out of time and was terminated.");
+//        [streamCoordinator releaseAll];
+//        [application endBackgroundTask:taskId];
+//    }];
+//    
+//    if (taskId == UIBackgroundTaskInvalid) {
+//        NSLog(@"Failed to start background task!");
+//        return;
+//    }
+//    else {
+//        pendBackgroundTask = YES;
+//    }
 
 }
 

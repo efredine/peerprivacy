@@ -412,24 +412,17 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         }
         
         
-//		if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
-//		{
-//			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
-//                                                                message:body 
-//                                                               delegate:nil 
-//                                                      cancelButtonTitle:@"Ok" 
-//                                                      otherButtonTitles:nil];
-//			[alertView show];
-//		}
-//		else
-//		{
-//			// We are not active, so use a local notification instead
-//			UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-//			localNotification.alertAction = @"Ok";
-//			localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
-//            
-//			[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-//		}
+		if (![[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
+        {
+            DDLogVerbose(@"Presenting notification...");
+            NSString *displayName = [conversation.user.displayName copy];
+			// We are not active, so use a local notification instead
+			UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+			localNotification.alertAction = @"Ok";
+			localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
+            
+			[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+		}
 	}
 }
 

@@ -15,8 +15,8 @@
 
 #define CHAT_BACKGROUND_COLOR [UIColor colorWithRed:0.859f green:0.886f blue:0.929f alpha:1.0f]
 
-#define VIEW_WIDTH self.view.frame.size.width
-#define VIEW_HEIGHT self.view.frame.size.height
+#define VIEW_WIDTH chatView.frame.size.width
+#define VIEW_HEIGHT chatView.frame.size.height
 
 #define RESET_CHAT_BAR_HEIGHT SET_CHAT_BAR_HEIGHT(kChatBarHeight1)
 #define EXPAND_CHAT_BAR_HEIGHT SET_CHAT_BAR_HEIGHT(kChatBarHeight4)

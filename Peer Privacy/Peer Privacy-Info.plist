@@ -48,6 +48,10 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>voip</string>
+	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>PeerPrivacy</string>
 	<key>UIRequiredDeviceCapabilities</key>

@@ -105,6 +105,7 @@
 		A1279494158D27620014DC8D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279493158D27620014DC8D /* SystemConfiguration.framework */; };
 		A1279496158D27870014DC8D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279495158D27870014DC8D /* libxml2.dylib */; };
 		A127949A158D28010014DC8D /* XMPPReconnect.m in Sources */ = {isa = PBXBuildFile; fileRef = A1279499158D28010014DC8D /* XMPPReconnect.m */; };
+		A12B562B15AB891900B04B14 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1279302158D19F20014DC8D /* Info.plist */; };
 		A13D3F0B15AA2878002348F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A13D3F0A15AA2878002348F1 /* QuartzCore.framework */; };
 		A15F0BBE159EADFF00DBB796 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A15F0B97159EADFF00DBB796 /* IASKAppSettingsViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A15F0BBF159EADFF00DBB796 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A15F0B99159EADFF00DBB796 /* IASKAppSettingsWebViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -158,7 +159,6 @@
 		A19AE627158E681400B8DF3C /* SXMStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE626158E681400B8DF3C /* SXMStreamManager.m */; };
 		A19AE62E158E6FE900B8DF3C /* SXMFacebookStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */; };
 		A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */; };
-		A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A19AE630158EBDB900B8DF3C /* Settings.bundle */; };
 		A19AE63B158EC71500B8DF3C /* SXMStreamCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */; };
 		A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A115A0FF5600B03B63 /* 08-chat.png */; };
 		A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A315A0FF6700B03B63 /* 20-gear2.png */; };
@@ -225,7 +225,7 @@
 		A12792F1158D19F20014DC8D /* SXMMessageViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SXMMessageViewController.m; sourceTree = "<group>"; };
 		A12792F8158D19F20014DC8D /* Peer PrivacyTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Peer PrivacyTests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A12792F9158D19F20014DC8D /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		A1279302158D19F20014DC8D /* Peer PrivacyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Peer PrivacyTests-Info.plist"; sourceTree = "<group>"; };
+		A1279302158D19F20014DC8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1279304158D19F20014DC8D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A1279306158D19F20014DC8D /* Peer_PrivacyTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Peer_PrivacyTests.h; sourceTree = "<group>"; };
 		A1279307158D19F20014DC8D /* Peer_PrivacyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Peer_PrivacyTests.m; sourceTree = "<group>"; };
@@ -372,6 +372,7 @@
 		A1279495158D27870014DC8D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		A1279498158D28000014DC8D /* XMPPReconnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPReconnect.h; sourceTree = "<group>"; };
 		A1279499158D28010014DC8D /* XMPPReconnect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPReconnect.m; sourceTree = "<group>"; };
+		A12B562C15AB89FB00B04B14 /* Peer Privacy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Peer Privacy.entitlements"; sourceTree = "<group>"; };
 		A13D3F0A15AA2878002348F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A15F0B96159EADFF00DBB796 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		A15F0B97159EADFF00DBB796 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
@@ -474,7 +475,6 @@
 		A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMJabberStreamManager.m; sourceTree = "<group>"; };
 		A19AE62C158E6FE900B8DF3C /* SXMFacebookStreamManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMFacebookStreamManager.h; sourceTree = "<group>"; };
 		A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMFacebookStreamManager.m; sourceTree = "<group>"; };
-		A19AE630158EBDB900B8DF3C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		A19AE639158EC71400B8DF3C /* SXMStreamCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMStreamCoordinator.h; sourceTree = "<group>"; };
 		A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMStreamCoordinator.m; sourceTree = "<group>"; };
 		A1BF82A115A0FF5600B03B63 /* 08-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat.png"; sourceTree = "<group>"; };
@@ -529,7 +529,6 @@
 		A12792C4158D19F20014DC8D = {
 			isa = PBXGroup;
 			children = (
-				A19AE630158EBDB900B8DF3C /* Settings.bundle */,
 				A12792DB158D19F20014DC8D /* Peer Privacy */,
 				A1279300158D19F20014DC8D /* Peer PrivacyTests */,
 				A12792D2158D19F20014DC8D /* Frameworks */,
@@ -569,6 +568,7 @@
 		A12792DB158D19F20014DC8D /* Peer Privacy */ = {
 			isa = PBXGroup;
 			children = (
+				A12B562C15AB89FB00B04B14 /* Peer Privacy.entitlements */,
 				A15F0B94159EADFF00DBB796 /* InAppSettingsKit */,
 				A186D1A3159E8B6A004E52A2 /* XMPP */,
 				A1279315158D1CB80014DC8D /* Resources */,
@@ -635,7 +635,7 @@
 		A1279301158D19F20014DC8D /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				A1279302158D19F20014DC8D /* Peer PrivacyTests-Info.plist */,
+				A1279302158D19F20014DC8D /* Info.plist */,
 				A1279303158D19F20014DC8D /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -1359,7 +1359,6 @@
 				A12792E9158D19F20014DC8D /* PeerPrivacy.storyboard in Resources */,
 				A1279313158D1A6B0014DC8D /* icon.png in Resources */,
 				A1279314158D1A6B0014DC8D /* icon@2x.png in Resources */,
-				A19AE631158EBDB900B8DF3C /* Settings.bundle in Resources */,
 				A113CAE215967EB700807CF1 /* defaultPerson.png in Resources */,
 				A1E47E5C1598E2B60013FE12 /* ChatBar.png in Resources */,
 				A1E47E5D1598E2B60013FE12 /* ChatBubbleGray.png in Resources */,
@@ -1380,6 +1379,7 @@
 				A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */,
 				A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */,
 				A10539C915A60F2500275717 /* accountdefaults.plist in Resources */,
+				A12B562B15AB891900B04B14 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1604,6 +1604,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = /usr/include/libxml2;
+				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = iphoneos;
@@ -1625,6 +1626,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = /usr/include/libxml2;
+				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				OTHER_LDFLAGS = "-lxml2";
