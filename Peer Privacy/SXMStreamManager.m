@@ -378,52 +378,41 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     DDLogVerbose(@"Stream: %@", xmppStream);
     DDLogVerbose(@"Message: %@", message);
+        		
+    NSString *body = [[message elementForName:@"body"] stringValue];
+    NSString *jidStr = [[message from] bare];
+    NSString *streamBareJidStr = self.xmppStream.myJID.bare;
     
-	// A simple example of inbound message handling.
+    NSManagedObjectContext *context = [[self appDelegate] managedObjectContext];
     
-	if ([message isChatMessageWithBody])
-	{
-//		XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[message from]
-//		                                                         xmppStream:xmppStream
-//		                                               managedObjectContext:[self managedObjectContext_roster]];
-//		NSString *displayName = [user displayName];
-		
-		NSString *body = [[message elementForName:@"body"] stringValue];
-        NSString *jidStr = [[message from] bare];
-        NSString *streamBareJidStr = self.xmppStream.myJID.bare;
-        
-        NSManagedObjectContext *context = [[self appDelegate] managedObjectContext];
-        
-        SXMConversation *conversation = [SXMConversation conversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
-        if (conversation == nil) {
-            conversation = [SXMConversation insertNewConversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
-        }   
-          
-        SXMMessage *newMessage = [conversation insertNewMessageInManagedObjectContext:context]; 
-        newMessage.body = body;
-        newMessage.fromMe = [NSNumber numberWithBool:NO];
-        newMessage.read = [NSNumber numberWithBool:NO];
-         
-        // Save the context.
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-        
-        
-		if (![[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
-        {
-            DDLogVerbose(@"Presenting notification...");
-            NSString *displayName = [conversation.user.displayName copy];
-			// We are not active, so use a local notification instead
-			UILocalNotification *localNotification = [[UILocalNotification alloc] init];
-			localNotification.alertAction = @"Ok";
-			localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
-            
-			[[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-		}
-	}
+    SXMConversation *conversation = [SXMConversation conversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
+    if (conversation == nil) {
+        conversation = [SXMConversation insertNewConversationForJidStr:jidStr andStreamBareJidStr:streamBareJidStr inManagedObjectContext:context];
+    }   
+      
+    SXMMessage *newMessage = [conversation insertNewMessageInManagedObjectContext:context]; 
+    newMessage.body = body;
+    newMessage.fromMe = [NSNumber numberWithBool:NO];
+    newMessage.read = [NSNumber numberWithBool:NO];
+     
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    // if application isn't active, send a notification
+    if (![[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
+    {
+        DDLogVerbose(@"Presenting notification...");
+        NSString *displayName = [conversation.user.displayName copy];
+        UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+        localNotification.alertAction = @"Ok";
+        localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
+        localNotification.soundName = UILocalNotificationDefaultSoundName;
+        [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    }
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence

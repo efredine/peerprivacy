@@ -97,7 +97,7 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     chatView.backgroundColor = CHAT_BACKGROUND_COLOR;
     chatView.clearsContextBeforeDrawing = NO;
     [self.view addSubview:chatView];
-    [self.view bringSubviewToFront:chatView];
+//    [self.view bringSubviewToFront:chatView];
     
     // Create chatContent.
     chatContent = [[UITableView alloc] initWithFrame:
@@ -171,11 +171,20 @@ static CGFloat const kChatBarHeight4 = 94.0f;
     [chatView sendSubviewToBack:chatBar];
     
     // if there are no messages yet, display the keyboard immediately
+    BOOL hasMessages = YES;
     if ([[self.fetchedResultsController sections] count] == 1) {
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.fetchedResultsController sections] objectAtIndex:0];
         if ([sectionInfo numberOfObjects] == 0){
-            [self.chatInput becomeFirstResponder];
+            hasMessages = NO;
         }
+    }
+    
+    if (hasMessages) {
+//        [self scrollToBottomAnimated:NO];
+    }
+    else {
+        [self.chatInput becomeFirstResponder];
+    
     }
           
     // // Test with lots of messages.
@@ -230,8 +239,8 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated]; // below: work around for [chatContent flashScrollIndicators]
     NSLog(@"viewWillAppear");
-    [chatContent performSelector:@selector(flashScrollIndicators) withObject:nil afterDelay:0.0];
-    [self scrollToBottomAnimated:NO];
+//    [chatContent performSelector:@selector(flashScrollIndicators) withObject:nil afterDelay:0.0];
+//    [self scrollToBottomAnimated:NO];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -247,7 +256,8 @@ static CGFloat const kChatBarHeight4 = 94.0f;
 {
     [super viewWillLayoutSubviews];
     if (!keyBoardVisible) {
-        chatView.frame = self.view.frame;    
+        chatView.frame = self.view.frame;  
+        [self scrollToBottomAnimated:NO];
     }
     NSLog(@"Will layout subviews");
 }
@@ -303,13 +313,13 @@ static CGFloat const kChatBarHeight4 = 94.0f;
                     textView.scrollEnabled = NO;
                 }
                 textView.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
-                [self scrollToBottomAnimated:YES];
+//                [self scrollToBottomAnimated:YES];
             } else if (previousContentHeight <= kContentHeightMax) { // grow
                 textView.scrollEnabled = YES;
                 textView.contentOffset = CGPointMake(0.0f, contentHeight-68.0f); // shift to bottom
                 if (previousContentHeight < kContentHeightMax) {
                     EXPAND_CHAT_BAR_HEIGHT;
-                    [self scrollToBottomAnimated:YES];
+//                    [self scrollToBottomAnimated:YES];
                 }
             }
         }
@@ -535,7 +545,6 @@ static NSString *kMessageCell = @"MessageCell";
         RESET_CHAT_BAR_HEIGHT;
         chatInput.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 3.0f, 0.0f);
         chatInput.contentOffset = CGPointMake(0.0f, 6.0f); // fix quirk
-        [self scrollToBottomAnimated:YES];
     }
 }
 
