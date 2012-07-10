@@ -105,7 +105,6 @@
 		A1279494158D27620014DC8D /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279493158D27620014DC8D /* SystemConfiguration.framework */; };
 		A1279496158D27870014DC8D /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A1279495158D27870014DC8D /* libxml2.dylib */; };
 		A127949A158D28010014DC8D /* XMPPReconnect.m in Sources */ = {isa = PBXBuildFile; fileRef = A1279499158D28010014DC8D /* XMPPReconnect.m */; };
-		A12B562B15AB891900B04B14 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1279302158D19F20014DC8D /* Info.plist */; };
 		A13D3F0B15AA2878002348F1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A13D3F0A15AA2878002348F1 /* QuartzCore.framework */; };
 		A15F0BBE159EADFF00DBB796 /* IASKAppSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A15F0B97159EADFF00DBB796 /* IASKAppSettingsViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A15F0BBF159EADFF00DBB796 /* IASKAppSettingsWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A15F0B99159EADFF00DBB796 /* IASKAppSettingsWebViewController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -372,7 +371,6 @@
 		A1279495158D27870014DC8D /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		A1279498158D28000014DC8D /* XMPPReconnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPReconnect.h; sourceTree = "<group>"; };
 		A1279499158D28010014DC8D /* XMPPReconnect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPReconnect.m; sourceTree = "<group>"; };
-		A12B562C15AB89FB00B04B14 /* Peer Privacy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Peer Privacy.entitlements"; sourceTree = "<group>"; };
 		A13D3F0A15AA2878002348F1 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		A15F0B96159EADFF00DBB796 /* IASKAppSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IASKAppSettingsViewController.h; sourceTree = "<group>"; };
 		A15F0B97159EADFF00DBB796 /* IASKAppSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IASKAppSettingsViewController.m; sourceTree = "<group>"; };
@@ -568,7 +566,6 @@
 		A12792DB158D19F20014DC8D /* Peer Privacy */ = {
 			isa = PBXGroup;
 			children = (
-				A12B562C15AB89FB00B04B14 /* Peer Privacy.entitlements */,
 				A15F0B94159EADFF00DBB796 /* InAppSettingsKit */,
 				A186D1A3159E8B6A004E52A2 /* XMPP */,
 				A1279315158D1CB80014DC8D /* Resources */,
@@ -1379,7 +1376,6 @@
 				A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */,
 				A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */,
 				A10539C915A60F2500275717 /* accountdefaults.plist in Resources */,
-				A12B562B15AB891900B04B14 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

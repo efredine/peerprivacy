@@ -406,10 +406,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (![[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
     {
         DDLogVerbose(@"Presenting notification...");
+        [UIApplication sharedApplication].applicationIconBadgeNumber += 1;
         NSString *displayName = [conversation.user.displayName copy];
         UILocalNotification *localNotification = [[UILocalNotification alloc] init];
         localNotification.alertAction = @"Ok";
-        localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n\n%@",displayName,body];
+        localNotification.alertBody = [NSString stringWithFormat:@"From: %@\n%@",displayName,body];
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     }

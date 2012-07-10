@@ -127,6 +127,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    [self saveContext];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -173,9 +174,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    if (self.pendBackgroundTask) {
-        [application endBackgroundTask:taskId];
-    }
+//    if (self.pendBackgroundTask) {
+//        [application endBackgroundTask:taskId];
+//    }
     [streamCoordinator configureStreams];
     
     DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
@@ -184,6 +185,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
+    [[UIApplication sharedApplication] setApplicationIconBadgeNumber: 0];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -324,6 +327,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (viewController == [self.tabBarController.viewControllers objectAtIndex:kConversationControllerIndex]) {
         [self.streamCoordinator configureStreams];
     }
+}
+
+#pragma mark local notifications
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
 }
 
 @end
