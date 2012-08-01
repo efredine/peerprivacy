@@ -93,7 +93,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (NSManagedObjectContext *)managedObjectContext_roster
 {
-	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
+	return [[SXMRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

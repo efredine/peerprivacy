@@ -9,7 +9,7 @@
 #import "SXMConversation.h"
 #import "SXMMessage.h"
 #import "XMPPMessage.h"
-#import "XMPPRosterCoreDataStorage.h"
+#import "SXMRosterCoreDataStorage.h"
 #import "SXMStreamCoordinator.h"
 #import "SXMAccount.h"
 
@@ -97,7 +97,7 @@
 - (XMPPUserCoreDataStorageObject *) user
 {
     XMPPUserCoreDataStorageObject *user = nil;
-    NSManagedObjectContext *moc = [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
+    NSManagedObjectContext *moc = [[SXMRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
     
     NSEntityDescription *entityDescription = [NSEntityDescription
                                               entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];

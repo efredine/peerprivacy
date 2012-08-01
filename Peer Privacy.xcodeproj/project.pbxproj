@@ -159,6 +159,7 @@
 		A19AE62E158E6FE900B8DF3C /* SXMFacebookStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */; };
 		A19AE62F158E752900B8DF3C /* SXMJabberStreamManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE62A158E6C4300B8DF3C /* SXMJabberStreamManager.m */; };
 		A19AE63B158EC71500B8DF3C /* SXMStreamCoordinator.m in Sources */ = {isa = PBXBuildFile; fileRef = A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */; };
+		A1B2C0E915C9BD6800B483BE /* SXMRosterCoreDataStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C0E815C9BD6800B483BE /* SXMRosterCoreDataStorage.m */; };
 		A1BF82A215A0FF5600B03B63 /* 08-chat.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A115A0FF5600B03B63 /* 08-chat.png */; };
 		A1BF82A415A0FF6700B03B63 /* 20-gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = A1BF82A315A0FF6700B03B63 /* 20-gear2.png */; };
 		A1CC35A1159E111B00DD28CD /* SXMConversation.m in Sources */ = {isa = PBXBuildFile; fileRef = A1CC35A0159E111B00DD28CD /* SXMConversation.m */; };
@@ -475,6 +476,8 @@
 		A19AE62D158E6FE900B8DF3C /* SXMFacebookStreamManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMFacebookStreamManager.m; sourceTree = "<group>"; };
 		A19AE639158EC71400B8DF3C /* SXMStreamCoordinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMStreamCoordinator.h; sourceTree = "<group>"; };
 		A19AE63A158EC71500B8DF3C /* SXMStreamCoordinator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMStreamCoordinator.m; sourceTree = "<group>"; };
+		A1B2C0E715C9BD6800B483BE /* SXMRosterCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMRosterCoreDataStorage.h; sourceTree = "<group>"; };
+		A1B2C0E815C9BD6800B483BE /* SXMRosterCoreDataStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SXMRosterCoreDataStorage.m; sourceTree = "<group>"; };
 		A1BF82A115A0FF5600B03B63 /* 08-chat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "08-chat.png"; sourceTree = "<group>"; };
 		A1BF82A315A0FF6700B03B63 /* 20-gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear2.png"; sourceTree = "<group>"; };
 		A1CC359F159E111B00DD28CD /* SXMConversation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SXMConversation.h; sourceTree = "<group>"; };
@@ -604,6 +607,8 @@
 				A10539D115A62C6B00275717 /* SXMExistingAccountController.m */,
 				A10539D615A62F8200275717 /* SXMAccountViewController.h */,
 				A10539D715A62F8200275717 /* SXMAccountViewController.m */,
+				A1B2C0E715C9BD6800B483BE /* SXMRosterCoreDataStorage.h */,
+				A1B2C0E815C9BD6800B483BE /* SXMRosterCoreDataStorage.m */,
 			);
 			path = "Peer Privacy";
 			sourceTree = "<group>";
@@ -1529,6 +1534,7 @@
 				A10539D215A62C6B00275717 /* SXMExistingAccountController.m in Sources */,
 				A10539D515A62E1800275717 /* SXMViewFacebookAccountController.m in Sources */,
 				A10539D815A62F8300275717 /* SXMAccountViewController.m in Sources */,
+				A1B2C0E915C9BD6800B483BE /* SXMRosterCoreDataStorage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

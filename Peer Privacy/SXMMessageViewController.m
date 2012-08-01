@@ -8,7 +8,6 @@
 
 #import "SXMAppDelegate.h"
 #import "SXMMessageViewController.h"
-#import "XMPPRosterCoreDataStorage.h"
 #import "SXMStreamManager.h"
 #import "SXMStreamCoordinator.h"
 #import <QuartzCore/QuartzCore.h>

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "XMPP.h"
-#import "XMPPRosterCoreDataStorage.h"
+#import "XMPPUserCoreDataStorageObject.h"
 
 @class SXMNewMessageController;
 @protocol SXMNewMessageDelegate <NSObject>

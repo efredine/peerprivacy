@@ -15,7 +15,7 @@
 #import "XMPP.h"
 #import "XMPPReconnect.h"
 #import "XMPPCapabilitiesCoreDataStorage.h"
-#import "XMPPRosterCoreDataStorage.h"
+#import "SXMRosterCoreDataStorage.h"
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
 
@@ -154,8 +154,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	// You can do it however you like! It's your application.
 	// But you do need to provide the roster with some storage facility.
 	
-	xmppRosterStorage = [XMPPRosterCoreDataStorage sharedInstance];
-    //	xmppRosterStorage = [[XMPPRosterCoreDataStorage alloc] initWithInMemoryStore];
+	xmppRosterStorage = [SXMRosterCoreDataStorage sharedInstance];
+    //	xmppRosterStorage = [[SXMRosterCoreDataStorage alloc] initWithInMemoryStore];
 	
 	xmppRoster = [[XMPPRoster alloc] initWithRosterStorage:xmppRosterStorage];
 	
@@ -267,16 +267,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 - (void)goOnline
 {
-//	XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
-//	
-//	[[self xmppStream] sendElement:presence];
+	XMPPPresence *presence = [XMPPPresence presence]; // type="available" is implicit
+	
+	[[self xmppStream] sendElement:presence];
 }
 
 - (void)goOffline
 {
-//	XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
-//	
-//	[[self xmppStream] sendElement:presence];
+	XMPPPresence *presence = [XMPPPresence presenceWithType:@"unavailable"];
+	
+	[[self xmppStream] sendElement:presence];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -378,6 +378,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 	DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     DDLogVerbose(@"Stream: %@", xmppStream);
     DDLogVerbose(@"Message: %@", message);
+    
+    // It might just be a chat state message - with no body.
+    if (![message isChatMessageWithBody]) 
+    {
+        return;
+    }
         		
     NSString *body = [[message elementForName:@"body"] stringValue];
     NSString *jidStr = [[message from] bare];

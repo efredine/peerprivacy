@@ -8,7 +8,7 @@
 
 #import "SXMExistingAccountController.h"
 #import "SXMAppDelegate.h"
-#import "XMPPRosterCoreDataStorage.h"
+#import "SXMRosterCoreDataStorage.h"
 #import "SXMStreamCoordinator.h"
 #import "SXMStreamManager.h"
 
@@ -30,7 +30,7 @@
 
 - (NSManagedObjectContext *)managedObjectContext_roster
 {
-	return [[XMPPRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
+	return [[SXMRosterCoreDataStorage sharedInstance] mainThreadManagedObjectContext];
 }
 
 #pragma view

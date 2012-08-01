@@ -10,14 +10,6 @@
 
 #import "SXMConversationViewController.h"
 
-#import "GCDAsyncSocket.h"
-#import "XMPP.h"
-#import "XMPPReconnect.h"
-#import "XMPPCapabilitiesCoreDataStorage.h"
-#import "XMPPRosterCoreDataStorage.h"
-#import "XMPPvCardAvatarModule.h"
-#import "XMPPvCardCoreDataStorage.h"
-
 #import "DDLog.h"
 #import "DDTTYLogger.h"
 

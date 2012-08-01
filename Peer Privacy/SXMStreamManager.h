@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "XMPPFramework.h"
 #import "SXMAccount.h"
+#import "SXMRosterCoreDataStorage.h"
 
 @class SXMStreamCoordinator;
 
