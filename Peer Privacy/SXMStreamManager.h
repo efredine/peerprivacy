@@ -18,7 +18,7 @@
 @property (nonatomic, strong) XMPPStream *xmppStream;
 @property (nonatomic, strong) XMPPReconnect *xmppReconnect;
 @property (nonatomic, strong) XMPPRoster *xmppRoster;
-@property (nonatomic, strong) XMPPRosterCoreDataStorage *xmppRosterStorage;
+@property (nonatomic, strong) SXMRosterCoreDataStorage *xmppRosterStorage;
 @property (nonatomic, strong) XMPPvCardCoreDataStorage *xmppvCardStorage;
 @property (nonatomic, strong) XMPPvCardTempModule *xmppvCardTempModule;
 @property (nonatomic, strong) XMPPvCardAvatarModule *xmppvCardAvatarModule;

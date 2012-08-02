@@ -11,5 +11,6 @@
 @interface SXMRosterCoreDataStorage : XMPPRosterCoreDataStorage
 
 @property (strong, nonatomic) NSMutableDictionary *pendingElements;
++ (SXMRosterCoreDataStorage *)sharedInstance;
 
 @end

@@ -18,12 +18,50 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_INFO; // | XMPP_LOG_FLAG_TRACE;
 static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 #endif
 
+// Log levels: off, error, warn, info, verbose
+#if DEBUG
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+#else
+static const int ddLogLevel = LOG_LEVEL_INFO;
+#endif
+
+
 @implementation SXMRosterCoreDataStorage
 
 @synthesize pendingElements;
 
+SXMRosterCoreDataStorage *sharedInstance;
+
++ (SXMRosterCoreDataStorage *)sharedInstance
+{
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		
+		sharedInstance = [[SXMRosterCoreDataStorage alloc] initWithDatabaseFilename:nil];
+	});
+	
+	return sharedInstance;
+}
+
+- (NSString *)managedObjectModelName
+{
+	// Override me, if needed, to provide customized behavior.
+	// 
+	// This method is queried to get the name of the ManagedObjectModel within the app bundle.
+	// It should return the name of the appropriate file (*.xdatamodel / *.mom / *.momd) sans file extension.
+	// 
+	// The default implementation returns the name of the subclass, stripping any suffix of "CoreDataStorage".
+	// E.g., if your subclass was named "XMPPExtensionCoreDataStorage", then this method would return "XMPPExtension".
+	// 
+	// Note that a file extension should NOT be included.
+    
+    return @"XMPPRoster";
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Utility Methods
+#pragma mark Helper Methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void) clearRosterforStream :(XMPPStream *)stream
@@ -61,14 +99,42 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     [XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
 }
 
-- (void) addItemToRoster: (NSXMLElement *)item  forStream: (XMPPStream *) stream inManagedObjectContext: (NSManagedObjectContext *) moc
+- (void) addItemToRoster: (NSXMLElement *)item  forStream: (XMPPStream *) stream 
 {
+    
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
     NSString *streamBareJidStr = [[self myJIDForXMPPStream:stream] bare];
     
     [XMPPUserCoreDataStorageObject insertInManagedObjectContext:moc
                                                        withItem:item
                                                streamBareJidStr:streamBareJidStr];
 
+}
+
+- (NSArray *) existingUsers
+{
+    NSManagedObjectContext *moc = self.managedObjectContext;
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
+                                              inManagedObjectContext:moc];
+    
+    NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"jidStr" ascending:YES selector:@selector(compare:)];
+    
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sd1, nil];
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setFetchBatchSize:saveThreshold];
+    
+    return [moc executeFetchRequest:fetchRequest error:nil];
+
+}
+
+- (NSString *)jidStrFromItem: (NSXMLElement *) item
+{
+   return [item attributeStringValueForName:@"jid"];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +149,6 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     return pendingElements;
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Overriden Roster Population methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +159,7 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
     	
 	[self scheduleBlock:^{
         [rosterPopulationSet addObject:[NSNumber numberWithPtr:(__bridge void *)stream]];
-        [self clearRosterforStream: stream];
+//        [self clearRosterforStream: stream];
         
         NSMutableArray *streamPendingElements = [[NSMutableArray alloc] init];
         [self.pendingElements setObject:streamPendingElements forKey:[NSNumber numberWithPtr:(__bridge void *)stream]];		
@@ -108,11 +173,78 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 	[self scheduleBlock:^{
 		NSNumber *streamKey = [NSNumber numberWithPtr:(__bridge void *)stream];
 		[rosterPopulationSet removeObject:streamKey];
-        NSManagedObjectContext *moc = [self managedObjectContext];
+        
         NSMutableArray *streamPendingElements = [self.pendingElements objectForKey:streamKey];
-        for (NSXMLElement *item in streamPendingElements) {
-            [self addItemToRoster:item forStream:stream inManagedObjectContext:moc];
+    
+        // Sort the pending elements by bare jid
+        [streamPendingElements sortUsingComparator:^NSComparisonResult(NSXMLElement *obj1, NSXMLElement *obj2) {        
+            NSString *jid1 = [self jidStrFromItem:obj1];
+            NSString *jid2 = [self jidStrFromItem:obj2];
+            return [jid1 compare:jid2];
+        }];
+        
+        // Fetch the existing users
+        NSArray *existingUsers = [self existingUsers];
+        
+        // Iterate over the two arrays finding additions and deletions
+        int newIndex = 0;
+        int existingIndex = 0;
+        NSMutableArray *additions = [[NSMutableArray alloc] init];
+        NSMutableArray *deletions = [[NSMutableArray alloc] init];
+        
+        while (newIndex < [streamPendingElements count] && existingIndex < [existingUsers count]) {
+            DDLogVerbose(@"Comparing %i to %i", newIndex, existingIndex);
+            NSXMLElement *item = [streamPendingElements objectAtIndex:newIndex];
+            XMPPUserCoreDataStorageObject *user = [existingUsers objectAtIndex:existingIndex];
+            NSString *newJid = [self jidStrFromItem: item];
+            NSString *existingJid = user.jidStr;
+            switch ([ newJid compare:existingJid])
+            {
+                case NSOrderedSame:
+                    // compare the rest to see if they are really the same or if the element should be updated
+                    DDLogVerbose(@"Same.");
+                    newIndex++;
+                    existingIndex++;
+                    break;
+                    
+                case NSOrderedAscending:
+                    // the new element needs to be added
+                    DDLogVerbose(@"Adding: %@", item);
+                    [additions addObject:item];
+                    newIndex++;
+                    break;
+                    
+                case NSOrderedDescending:
+                    // the existing user no longer exists in the roster and should be deleted
+                    DDLogVerbose(@"Deleting: %@", user);
+                    [deletions addObject:user];
+                    existingIndex++;
+                    break;
+                    
+                default:
+                    break;
+            }
         }
+    
+        // If there are new users remaining, add them.
+        for (int i=newIndex; i<[streamPendingElements count]; i++) {
+            [additions addObject:[streamPendingElements objectAtIndex:i]];
+        }
+        
+        // If there are existing users remaining, delete them.
+        for (int i=existingIndex; i<[existingUsers count]; i++) {
+            XMPPUserCoreDataStorageObject *user = [existingUsers objectAtIndex:i];
+            [deletions addObject: user];
+        }
+        
+        // Process the additions
+        for (NSXMLElement *item in additions) {
+            [self addItemToRoster:item forStream:stream];
+        }
+        
+        // Process the deletions
+        
+        // Done with this stream
         [self.pendingElements removeObjectForKey:streamKey];
 	}];
 }
@@ -171,6 +303,9 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 
 - (void)clearAllUsersAndResourcesForXMPPStream:(XMPPStream *)stream
 {
+    
+    return;
+    
 	XMPPLogTrace();
 	
 	[self scheduleBlock:^{
@@ -180,36 +315,36 @@ static const int xmppLogLevel = XMPP_LOG_LEVEL_WARN;
 		
 		NSManagedObjectContext *moc = [self managedObjectContext];
 		
-		NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
-												  inManagedObjectContext:moc];
-		
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-		[fetchRequest setEntity:entity];
-		[fetchRequest setFetchBatchSize:saveThreshold];
-		
-		if (stream)
-		{
-			NSPredicate *predicate;
-			predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@",
-                         [[self myJIDForXMPPStream:stream] bare]];
-			
-			[fetchRequest setPredicate:predicate];
-		}
-		
-		NSArray *allUsers = [moc executeFetchRequest:fetchRequest error:nil];
-		
-		NSUInteger unsavedCount = [self numberOfUnsavedChanges];
-		
-		for (XMPPUserCoreDataStorageObject *user in allUsers)
-		{
-			[moc deleteObject:user];
-			
-			if (++unsavedCount >= saveThreshold)
-			{
-				[self save];
-				unsavedCount = 0;
-			}
-		}
+//		NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
+//												  inManagedObjectContext:moc];
+//		
+//		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+//		[fetchRequest setEntity:entity];
+//		[fetchRequest setFetchBatchSize:saveThreshold];
+//		
+//		if (stream)
+//		{
+//			NSPredicate *predicate;
+//			predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@",
+//                         [[self myJIDForXMPPStream:stream] bare]];
+//			
+//			[fetchRequest setPredicate:predicate];
+//		}
+//		
+//		NSArray *allUsers = [moc executeFetchRequest:fetchRequest error:nil];
+//		
+//		NSUInteger unsavedCount = [self numberOfUnsavedChanges];
+//		
+//		for (XMPPUserCoreDataStorageObject *user in allUsers)
+//		{
+//			[moc deleteObject:user];
+//			
+//			if (++unsavedCount >= saveThreshold)
+//			{
+//				[self save];
+//				unsavedCount = 0;
+//			}
+//		}
         
 		[XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
 	}];
