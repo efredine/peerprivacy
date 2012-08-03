@@ -11,6 +11,7 @@
 #import "SXMRosterCoreDataStorage.h"
 #import "SXMStreamCoordinator.h"
 #import "SXMStreamManager.h"
+#import "SXMRosterCoreDataStorage.h"
 
 @interface SXMExistingAccountController ()
 
@@ -73,23 +74,7 @@
 
 - (void)deleteAccountRoster
 {
-    NSManagedObjectContext *moc = [self managedObjectContext_roster];
-    
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject" inManagedObjectContext:moc];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:entity];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr = %@", self.account.streamBareJidStr];
-    [fetchRequest setPredicate:predicate];
-     
-    NSError *error = nil;
-    NSArray *array = [moc executeFetchRequest:fetchRequest error:&error];
-    if (array != nil) {
-        for (XMPPUserCoreDataStorageObject *user in array) {
-            [moc deleteObject:user];
-        }
-    }
+    [[SXMRosterCoreDataStorage sharedInstance] deleteRosterforStreamBareJidStr:self.account.streamBareJidStr];
 }
 
 - (void)deleteAccount

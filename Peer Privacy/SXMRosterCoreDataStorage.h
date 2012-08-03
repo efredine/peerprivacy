@@ -12,5 +12,6 @@
 
 @property (strong, nonatomic) NSMutableDictionary *pendingElements;
 + (SXMRosterCoreDataStorage *)sharedInstance;
+- (void) deleteRosterforStreamBareJidStr :(NSString *)streamBareJidStr;
 
 @end

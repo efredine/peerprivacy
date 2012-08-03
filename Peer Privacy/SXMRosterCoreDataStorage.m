@@ -64,55 +64,18 @@ SXMRosterCoreDataStorage *sharedInstance;
 #pragma mark Helper Methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void) clearRosterforStream :(XMPPStream *)stream
-{
-    // Clear anything already in the roster core data store.
-    // 
-    // Note: Deleting a user will delete all associated resources
-    // because of the cascade rule in our core data model.
-    
-    NSManagedObjectContext *moc = [self managedObjectContext];
-    
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
-                                              inManagedObjectContext:moc];
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    [fetchRequest setEntity:entity];
-    [fetchRequest setFetchBatchSize:saveThreshold];
-    
-    if (stream)
-    {
-        NSPredicate *predicate;
-        predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@",
-                     [[self myJIDForXMPPStream:stream] bare]];
-        
-        [fetchRequest setPredicate:predicate];
-    }
-    
-    NSArray *allUsers = [moc executeFetchRequest:fetchRequest error:nil];
-    
-    for (XMPPUserCoreDataStorageObject *user in allUsers)
-    {
-        [moc deleteObject:user];
-    }
-    
-    [XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
-}
 
-- (void) addItemToRoster: (NSXMLElement *)item  forStream: (XMPPStream *) stream 
+- (void) addItemToRoster: (NSXMLElement *)item  forStream: (XMPPStream *) stream inManagedObjectContext: (NSManagedObjectContext *) moc
 {
     
-    NSManagedObjectContext *moc = self.managedObjectContext;
-    
-    NSString *streamBareJidStr = [[self myJIDForXMPPStream:stream] bare];
-    
+    NSString *streamBareJidStr = [[self myJIDForXMPPStream:stream] bare];    
     [XMPPUserCoreDataStorageObject insertInManagedObjectContext:moc
                                                        withItem:item
                                                streamBareJidStr:streamBareJidStr];
 
 }
 
-- (NSArray *) existingUsers
+- (NSArray *) existingUsersForStream :(XMPPStream *) stream
 {
     NSManagedObjectContext *moc = self.managedObjectContext;
     
@@ -128,13 +91,37 @@ SXMRosterCoreDataStorage *sharedInstance;
     [fetchRequest setSortDescriptors:sortDescriptors];
     [fetchRequest setFetchBatchSize:saveThreshold];
     
+    if (stream)
+    {
+        NSPredicate *predicate;
+        predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@",
+                     [[self myJIDForXMPPStream:stream] bare]];
+        
+        [fetchRequest setPredicate:predicate];
+    }
+    
     return [moc executeFetchRequest:fetchRequest error:nil];
 
 }
 
 - (NSString *)jidStrFromItem: (NSXMLElement *) item
 {
-   return [item attributeStringValueForName:@"jid"];
+    NSString *jidStr = [item attributeStringValueForName:@"jid"];
+    return [[XMPPJID jidWithString:jidStr] bare];
+}
+
+// Returns a block initialized with the current save count that can
+// be used to save if needed.  
+- (void(^)()) checkForSaveBlock
+{
+    __block NSUInteger unsavedCount = [self numberOfUnsavedChanges];
+    return ^{
+		if (++unsavedCount >= saveThreshold)
+            {
+                [self save];
+                unsavedCount = 0;
+            }
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,13 +144,10 @@ SXMRosterCoreDataStorage *sharedInstance;
 {
 	XMPPLogTrace();
     	
-	[self scheduleBlock:^{
-        [rosterPopulationSet addObject:[NSNumber numberWithPtr:(__bridge void *)stream]];
-//        [self clearRosterforStream: stream];
-        
-        NSMutableArray *streamPendingElements = [[NSMutableArray alloc] init];
-        [self.pendingElements setObject:streamPendingElements forKey:[NSNumber numberWithPtr:(__bridge void *)stream]];		
-	}];
+    [rosterPopulationSet addObject:[NSNumber numberWithPtr:(__bridge void *)stream]];
+    
+    NSMutableArray *streamPendingElements = [[NSMutableArray alloc] init];
+    [self.pendingElements setObject:streamPendingElements forKey:[NSNumber numberWithPtr:(__bridge void *)stream]];		
 }
 
 - (void)endRosterPopulationForXMPPStream:(XMPPStream *)stream
@@ -184,14 +168,15 @@ SXMRosterCoreDataStorage *sharedInstance;
         }];
         
         // Fetch the existing users
-        NSArray *existingUsers = [self existingUsers];
+        NSArray *existingUsers = [self existingUsersForStream:stream];
         
-        // Iterate over the two arrays finding additions and deletions
+        // Iterate over the two arrays finding changes, additions and deletions
         int newIndex = 0;
         int existingIndex = 0;
         NSMutableArray *additions = [[NSMutableArray alloc] init];
-        NSMutableArray *deletions = [[NSMutableArray alloc] init];
-        
+        void(^checkForSave)() = [self checkForSaveBlock];
+        NSManagedObjectContext *moc = [self managedObjectContext];
+
         while (newIndex < [streamPendingElements count] && existingIndex < [existingUsers count]) {
             DDLogVerbose(@"Comparing %i to %i", newIndex, existingIndex);
             NSXMLElement *item = [streamPendingElements objectAtIndex:newIndex];
@@ -201,7 +186,7 @@ SXMRosterCoreDataStorage *sharedInstance;
             switch ([ newJid compare:existingJid])
             {
                 case NSOrderedSame:
-                    // compare the rest to see if they are really the same or if the element should be updated
+                    // TODO: compare the rest to see if they are really the same or if the element should be updated
                     DDLogVerbose(@"Same.");
                     newIndex++;
                     existingIndex++;
@@ -217,7 +202,8 @@ SXMRosterCoreDataStorage *sharedInstance;
                 case NSOrderedDescending:
                     // the existing user no longer exists in the roster and should be deleted
                     DDLogVerbose(@"Deleting: %@", user);
-                    [deletions addObject:user];
+                    [moc deleteObject:user];
+                    checkForSave();
                     existingIndex++;
                     break;
                     
@@ -225,24 +211,27 @@ SXMRosterCoreDataStorage *sharedInstance;
                     break;
             }
         }
+        
+        // If there are existing users remaining, delete them.
+        for (int i=existingIndex; i<[existingUsers count]; i++) {
+            XMPPUserCoreDataStorageObject *user = [existingUsers objectAtIndex:i];
+            [moc deleteObject:user];
+            checkForSave();
+        }
     
         // If there are new users remaining, add them.
         for (int i=newIndex; i<[streamPendingElements count]; i++) {
             [additions addObject:[streamPendingElements objectAtIndex:i]];
         }
         
-        // If there are existing users remaining, delete them.
-        for (int i=existingIndex; i<[existingUsers count]; i++) {
-            XMPPUserCoreDataStorageObject *user = [existingUsers objectAtIndex:i];
-            [deletions addObject: user];
-        }
-        
         // Process the additions
         for (NSXMLElement *item in additions) {
-            [self addItemToRoster:item forStream:stream];
+            [self addItemToRoster:item forStream:stream inManagedObjectContext:moc];
+            checkForSave();
         }
         
-        // Process the deletions
+        // Update the groups
+        [XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
         
         // Done with this stream
         [self.pendingElements removeObjectForKey:streamKey];
@@ -257,98 +246,102 @@ SXMRosterCoreDataStorage *sharedInstance;
 	// The passed parameter is a subnode of the IQ, and we need to pass it to an asynchronous operation.
 	NSXMLElement *item = [itemSubElement copy];
 	
-	[self scheduleBlock:^{
-		
-		NSManagedObjectContext *moc = [self managedObjectContext];
-		
-		if ([rosterPopulationSet containsObject:[NSNumber numberWithPtr:(__bridge void *)stream]])
-		{
-            NSNumber *streamKey = [NSNumber numberWithPtr:(__bridge void *)stream];
-            NSMutableArray *streamPendingElements = [self.pendingElements objectForKey:streamKey];
-           [streamPendingElements addObject:item];
-		}
-		else
-		{
-			NSString *jidStr = [item attributeStringValueForName:@"jid"];
-			XMPPJID *jid = [[XMPPJID jidWithString:jidStr] bareJID];
-			
-			XMPPUserCoreDataStorageObject *user = [self userForJID:jid xmppStream:stream managedObjectContext:moc];
-			
-			NSString *subscription = [item attributeStringValueForName:@"subscription"];
-			if ([subscription isEqualToString:@"remove"])
-			{
-				if (user)
-				{
-					[moc deleteObject:user];
-				}
-			}
-			else
-			{
-				if (user)
-				{
-					[user updateWithItem:item];
-				}
-				else
-				{
-					NSString *streamBareJidStr = [[self myJIDForXMPPStream:stream] bare];
-					
-					[XMPPUserCoreDataStorageObject insertInManagedObjectContext:moc
-					                                                   withItem:item
-					                                           streamBareJidStr:streamBareJidStr];
-				}
-			}
-		}
-	}];
+        
+    // Ignore if it's my JID
+    // TODO: is this necessary - it might have already been done!
+    NSString *myJidForStream = [[self myJIDForXMPPStream:stream] bare];
+    if ([myJidForStream isEqualToString:[self jidStrFromItem:item]]) {
+        return;
+    }
+    
+    // If we're fetching the roster for this stream, just cache it.
+    if ([rosterPopulationSet containsObject:[NSNumber numberWithPtr:(__bridge void *)stream]])
+    {
+        NSNumber *streamKey = [NSNumber numberWithPtr:(__bridge void *)stream];
+        NSMutableArray *streamPendingElements = [self.pendingElements objectForKey:streamKey];
+       [streamPendingElements addObject:item];
+    }
+    else
+    {
+        [self scheduleBlock:^{
+            NSManagedObjectContext *moc = [self managedObjectContext];
+
+            NSString *jidStr = [item attributeStringValueForName:@"jid"];
+            XMPPJID *jid = [[XMPPJID jidWithString:jidStr] bareJID];
+            
+            XMPPUserCoreDataStorageObject *user = [self userForJID:jid xmppStream:stream managedObjectContext:moc];
+            
+            NSString *subscription = [item attributeStringValueForName:@"subscription"];
+            if ([subscription isEqualToString:@"remove"])
+            {
+                if (user)
+                {
+                    [moc deleteObject:user];
+                }
+            }
+            else
+            {
+                if (user)
+                {
+                    [user updateWithItem:item];
+                }
+                else
+                {
+                    NSString *streamBareJidStr = [[self myJIDForXMPPStream:stream] bare];
+                    
+                    [XMPPUserCoreDataStorageObject insertInManagedObjectContext:moc
+                                                                       withItem:item
+                                                               streamBareJidStr:streamBareJidStr];
+                }
+            }
+        }];
+    }
+
 }
 
+// Called from XMPPRoster to clear the users.  But since they are now persistent, this can
+// just return.  
 - (void)clearAllUsersAndResourcesForXMPPStream:(XMPPStream *)stream
 {
-    
     return;
-    
-	XMPPLogTrace();
-	
-	[self scheduleBlock:^{
-		
-		// Note: Deleting a user will delete all associated resources
-		// because of the cascade rule in our core data model.
-		
-		NSManagedObjectContext *moc = [self managedObjectContext];
-		
-//		NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
-//												  inManagedObjectContext:moc];
-//		
-//		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-//		[fetchRequest setEntity:entity];
-//		[fetchRequest setFetchBatchSize:saveThreshold];
-//		
-//		if (stream)
-//		{
-//			NSPredicate *predicate;
-//			predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@",
-//                         [[self myJIDForXMPPStream:stream] bare]];
-//			
-//			[fetchRequest setPredicate:predicate];
-//		}
-//		
-//		NSArray *allUsers = [moc executeFetchRequest:fetchRequest error:nil];
-//		
-//		NSUInteger unsavedCount = [self numberOfUnsavedChanges];
-//		
-//		for (XMPPUserCoreDataStorageObject *user in allUsers)
-//		{
-//			[moc deleteObject:user];
-//			
-//			if (++unsavedCount >= saveThreshold)
-//			{
-//				[self save];
-//				unsavedCount = 0;
-//			}
-//		}
-        
-		[XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
-	}];
 }
+
+// Delete the users for a particular stream 
+- (void) deleteRosterforStreamBareJidStr :(NSString *)streamBareJidStr
+{
+    // Delete all the users for this stream.
+    // 
+    // Note: Deleting a user will delete all associated resources
+    // because of the cascade rule in our core data model.
+ 	[self scheduleBlock:^{
+        
+        void(^checkForSave)() = [self checkForSaveBlock];  
+        NSManagedObjectContext *moc = [self managedObjectContext];
+        
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
+                                                  inManagedObjectContext:moc];
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setFetchBatchSize:saveThreshold];
+        
+        NSPredicate *predicate;
+        predicate = [NSPredicate predicateWithFormat:@"streamBareJidStr == %@", streamBareJidStr];
+        [fetchRequest setPredicate:predicate];
+        
+        NSArray *allUsers = [moc executeFetchRequest:fetchRequest error:nil];
+        
+        for (XMPPUserCoreDataStorageObject *user in allUsers)
+        {
+            [moc deleteObject:user];
+            checkForSave();
+        }
+        
+        [XMPPGroupCoreDataStorageObject clearEmptyGroupsInManagedObjectContext:moc];
+        
+    }];
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Other Overrides
@@ -371,7 +364,7 @@ SXMRosterCoreDataStorage *sharedInstance;
 	
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath])
 	{
-		[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+//		[[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
 	}
 }
 
